@@ -1,369 +1,1621 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LASTIFY</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Yönetim Paneli</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23ffc400'/%3E%3Cpath d='M13 3L5 13h6l-1 8 8-10h-6z' fill='%23111'/%3E%3C/svg%3E">
 <style>
-:root{--bg:#000;--panel:#121212;--card:#181818;--hover:#282828;--text:#fff;--sub:#b3b3b3;--green:#1ed760}
-*{box-sizing:border-box;margin:0;padding:0;font-family:"Circular Std","Helvetica Neue",Arial,sans-serif}
-html,body{height:100%}
-body{background:var(--bg);color:var(--text);display:grid;grid-template-columns:300px 1fr;grid-template-rows:1fr 90px;gap:8px;padding:8px;overflow:hidden}
-button{border:0;background:none;color:inherit;cursor:pointer}
-svg{width:1em;height:1em;fill:currentColor;flex:none}
-.side{grid-row:1;display:flex;flex-direction:column;gap:8px;min-height:0}
-.box{background:var(--panel);border-radius:8px}
-.nav{padding:20px 22px;display:flex;flex-direction:column;gap:18px}
-.logo{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
-.logo i{width:32px;height:32px;border-radius:50%;background:var(--green);display:grid;place-items:center;color:#000;font-size:18px;font-style:normal}
-.nav button{display:flex;align-items:center;gap:16px;font-size:16px;font-weight:700;color:var(--sub);text-align:left;transition:color .15s}
-.nav button svg{font-size:24px}
-.nav button:hover,.nav button.on{color:var(--text)}
-.lib{flex:1;padding:16px 8px;overflow:auto;min-height:0}
-.lib h2{font-size:16px;color:var(--sub);padding:0 12px 12px;display:flex;align-items:center;gap:10px}
-.lib h2 svg{font-size:24px}
-.row{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:6px;cursor:pointer}
-.row:hover{background:var(--hover)}
-.row img,.row .ph{width:48px;height:48px;border-radius:4px;object-fit:cover;background:#333;flex:none}
-.row .ph{display:grid;place-items:center;font-size:20px;background:linear-gradient(135deg,#450af5,#c4efd9)}
-.row div{min-width:0}
-.row b,.row small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row b{font-size:15px;font-weight:500}
-.row small{font-size:13px;color:var(--sub);margin-top:3px}
-.row.cur b{color:var(--green)}
-.main{grid-row:1;grid-column:2;overflow:auto;position:relative;background:linear-gradient(#2a2a2a 0,var(--panel) 280px);border-radius:8px;min-width:0}
-.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:16px 24px;background:rgba(18,18,18,.85);backdrop-filter:blur(8px)}
-.top .circ{width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.7);display:grid;place-items:center;font-size:18px}
-form{flex:1;max-width:420px;position:relative}
-form svg{position:absolute;left:14px;top:50%;translate:0 -50%;color:var(--sub);font-size:22px;pointer-events:none}
-input{width:100%;height:48px;border-radius:500px;border:2px solid transparent;background:#242424;color:var(--text);font-size:15px;padding:0 16px 0 46px;outline:none}
-input:hover{background:#2a2a2a}
-input:focus{border-color:var(--text)}
-.content{padding:8px 24px 32px}
-.content h2{font-size:24px;font-weight:700;margin:16px 0}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{background:#2a2a2a;padding:8px 16px;border-radius:500px;font-size:14px;transition:background .15s}
-.chip:hover{background:#3a3a3a}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
-.card{background:var(--card);padding:16px;border-radius:8px;cursor:pointer;position:relative;transition:background .2s;min-width:0}
-.card:hover,.card.cur{background:var(--hover)}
-.card .cv{position:relative;margin-bottom:16px}
-.card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#333;box-shadow:0 8px 24px rgba(0,0,0,.5)}
-.card .pl{position:absolute;right:8px;bottom:8px;width:48px;height:48px;border-radius:50%;background:var(--green);color:#000;display:grid;place-items:center;font-size:22px;opacity:0;translate:0 8px;transition:.2s;box-shadow:0 8px 8px rgba(0,0,0,.3)}
-.card:hover .pl,.card.cur .pl{opacity:1;translate:0 0}
-.card h3{font-size:16px;font-weight:700;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
-.card.cur h3{color:var(--green)}
-.card p{font-size:14px;color:var(--sub);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.msg{text-align:center;color:var(--sub);padding:60px 12px;font-size:16px;overflow-wrap:anywhere}
-.msg b{display:block;color:var(--text);font-size:22px;margin-bottom:8px}
-.bar{grid-row:2;grid-column:1/-1;display:grid;grid-template-columns:1fr minmax(280px,722px) 1fr;align-items:center;gap:16px;padding:0 12px}
-.now{display:flex;align-items:center;gap:14px;min-width:0}
-.now img{width:56px;height:56px;border-radius:4px;object-fit:cover;background:#333;flex:none}
-.now div{min-width:0}
-.now b,.now small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.now b{font-size:14px;font-weight:500}
-.now small{font-size:12px;color:var(--sub);margin-top:4px}
-.like{font-size:20px;color:var(--sub)}
-.like:hover{color:var(--text)}
-.like.on{color:var(--green)}
-.ctr{display:flex;flex-direction:column;align-items:center;gap:8px}
-.btns{display:flex;align-items:center;gap:20px}
-.btns button{font-size:22px;color:var(--sub)}
-.btns button:hover{color:var(--text)}
-.btns .pp{width:34px;height:34px;border-radius:50%;background:var(--text);color:#000;display:grid;place-items:center;font-size:18px}
-.btns .pp:hover{transform:scale(1.06);color:#000}
-.prog{display:flex;align-items:center;gap:8px;width:100%;font-size:12px;color:var(--sub)}
-.prog span{width:40px}
-.prog span:first-child{text-align:right}
-input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:linear-gradient(to right,var(--text) var(--p,0%),#4d4d4d var(--p,0%));padding:0;border:0;outline:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;opacity:0}
-input[type=range]:hover{background:linear-gradient(to right,var(--green) var(--p,0%),#4d4d4d var(--p,0%))}
-input[type=range]:hover::-webkit-slider-thumb{opacity:1}
-input[type=range]::-moz-range-thumb{width:12px;height:12px;border:0;border-radius:50%;background:#fff}
-.prog input{flex:1}
-.vol{display:flex;align-items:center;justify-content:flex-end;gap:8px;font-size:20px;color:var(--sub)}
-.vol input{width:100px}
-#yt{position:fixed;width:200px;height:200px;left:-9999px;top:0;opacity:0;pointer-events:none}
-button:focus-visible,.card:focus-visible,.row:focus-visible{outline:2px solid var(--green);outline-offset:2px}
-.mnav{display:none}
-@media(max-width:820px){
-body{grid-template-columns:1fr;grid-template-rows:1fr 70px 56px;gap:0;padding:0}
-.side{display:none}
-.main{grid-column:1;border-radius:0}
-.top{padding:12px 16px}
-.content{padding:8px 16px 24px}
-.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-.bar{grid-row:2;grid-template-columns:1fr auto;background:#1a1a1a;margin:0 8px;border-radius:8px;height:62px;align-self:center;padding:0 10px}
-.ctr{gap:0}
-.btns .sk,.prog span,.vol{display:none}
-.btns{gap:14px}
-.prog{position:absolute;left:0;right:0;bottom:0}
-.bar{position:relative}
-.prog input{width:100%;height:2px}
-.now img{width:44px;height:44px}
-.mnav{display:flex;justify-content:space-around;align-items:center;background:#000}
-.mnav button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--sub)}
-.mnav button svg{font-size:24px}
-.mnav button.on{color:var(--text)}
+:root{
+  --bg:#080808; --side:#0e0e0e; --card:#141414; --card2:#1a1a1a; --line:#262626; --line2:#363636;
+  --text:#f4f4f4; --mute:#8a8a8a; --y:#ffc400; --y2:#ffd84d; --yd:#7a5f00; --ytint:rgba(255,196,0,.10);
+  --red:#ff4d4d; --green:#3ddc84; --radius:12px;
+  --stripe:repeating-linear-gradient(-45deg,#ffc400 0 9px,#0b0b0b 9px 18px);
 }
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--y)}
+h2,h3{margin:0}
+::selection{background:var(--y);color:#111}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#2c2c2c;border-radius:6px}::-webkit-scrollbar-track{background:transparent}
+
+input,select,textarea{background:#0c0c0c;border:1px solid var(--line2);border-radius:8px;padding:9px 11px;width:100%;outline:none;transition:border-color .15s,box-shadow .15s;min-width:0}
+input:focus,select:focus,textarea:focus{border-color:var(--y);box-shadow:0 0 0 3px rgba(255,196,0,.14)}
+input::placeholder,textarea::placeholder{color:#5d5d5d}
+textarea{resize:vertical;min-height:96px;line-height:1.45}
+select{appearance:none;padding-right:32px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23ffc400' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+input[type=checkbox]{width:16px;height:16px;padding:0;accent-color:var(--y);cursor:pointer;flex:none}
+input[type=color]{width:46px;height:38px;padding:3px;cursor:pointer;flex:none}
+.check{display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:#cfcfcf;user-select:none}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer;background:var(--y);color:#111;transition:background .15s,transform .15s,border-color .15s,color .15s;white-space:nowrap}
+.btn:hover{background:var(--y2);transform:translateY(-1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;color:var(--text);border-color:var(--line2)}
+.btn.ghost:hover{border-color:var(--y);color:var(--y);background:var(--ytint)}
+.btn.danger{background:var(--red);color:#fff}
+.btn.danger:hover{background:#ff6b6b}
+.btn.ghost.danger{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.sm{padding:6px 11px;font-size:12px}
+.btn.icon{padding:8px}
+.ic{display:inline-flex;vertical-align:middle;flex:none}
+
+.stripe{height:8px;background:var(--stripe)}
+.hint{color:var(--mute);font-size:12.5px}
+.sp{flex:1}
+.empty{padding:34px 16px;text-align:center;color:var(--mute)}
+.tag{background:var(--y);color:#111;font-size:10px;font-weight:800;padding:1px 6px;border-radius:4px;letter-spacing:.06em}
+.tag.dim{background:#2a2a2a;color:#bbb}
+
+/* ---------- giriş ---------- */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 0%,rgba(255,196,0,.14),transparent 55%),var(--bg)}
+.login-card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line2);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.lc-body{padding:28px;display:grid;gap:14px}
+.logo{width:40px;height:40px;border-radius:10px;background:var(--y);display:grid;place-items:center;color:#111;flex:none}
+.logo.big{width:56px;height:56px;border-radius:14px}
+.lc-body h2{font-size:22px;letter-spacing:.02em}
+.err{color:var(--red);margin:0;min-height:18px;font-size:13px}
+
+/* ---------- iskelet ---------- */
+#shell{display:grid;grid-template-columns:268px minmax(0,1fr);min-height:100vh}
+#side{background:var(--side);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow:auto;z-index:60}
+.brand{padding:18px 18px 12px;display:flex;gap:12px;align-items:center}
+.brand b{letter-spacing:.16em;font-size:13px;text-transform:uppercase;display:block}
+.brand small{color:var(--mute);font-size:10.5px;letter-spacing:.14em}
+.guild{margin:6px 14px 8px;padding:10px;border:1px solid var(--line);border-radius:10px;display:flex;gap:10px;align-items:center;background:var(--card)}
+.guild img,.guild .gi{width:38px;height:38px;border-radius:10px;background:#222;object-fit:cover;flex:none;display:grid;place-items:center;font-weight:800;color:var(--y)}
+.guild b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:168px}
+nav .grp{padding:16px 20px 6px;font-size:10.5px;letter-spacing:.2em;color:var(--mute);text-transform:uppercase;font-weight:700}
+nav a{display:flex;align-items:center;gap:12px;margin:2px 10px;padding:10px 12px;border-radius:8px;color:#cfcfcf;cursor:pointer;border-left:3px solid transparent;user-select:none;transition:background .15s,color .15s}
+nav a:hover{background:#1a1a1a;color:#fff}
+nav a.active{background:var(--ytint);color:var(--y);border-left-color:var(--y);font-weight:700}
+.side-foot{margin-top:auto;padding:14px;display:grid;gap:8px;border-top:1px solid var(--line)}
+main{min-width:0}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(8,8,8,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:0 24px;display:flex;align-items:center;gap:14px;min-height:66px}
+.topbar h1{font-size:19px;margin:0;letter-spacing:.02em}
+.topbar p{margin:0;color:var(--mute);font-size:12.5px}
+.status{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#bbb;border:1px solid var(--line2);border-radius:999px;padding:4px 12px}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(61,220,132,.18)}
+.hamb{display:none}
+.page{display:none;padding:24px;max-width:1300px;margin:0 auto}
+.page.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:55}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.split{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.card>h3{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--y);margin-bottom:4px}
+.card>.desc{color:var(--mute);margin:0 0 14px;font-size:12.5px}
+.sec{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin:26px 0 12px}
+.field{display:grid;gap:6px;margin-bottom:14px}
+.field>label,.lbl2{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#bdbdbd}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;background:#0c0c0c;border:1px solid var(--line2);border-radius:10px;padding:3px;gap:3px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;padding:8px 14px;border-radius:7px;cursor:pointer;color:#bbb;font-weight:700}
+.seg button:hover{color:#fff}
+.seg button.on{background:var(--y);color:#111}
+
+/* ---------- genel bakış ---------- */
+.stats{grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.stat{position:relative;overflow:hidden}
+.stat .si{color:var(--y);margin-bottom:8px}
+.stat .num{font-size:30px;font-weight:800;letter-spacing:-.01em;line-height:1.1}
+.stat .lbl{color:var(--mute);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.stat::after{content:"";position:absolute;right:-18px;top:-18px;width:70px;height:70px;border-radius:50%;background:var(--ytint)}
+.quicks{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.quick{display:flex;gap:14px;align-items:center;cursor:pointer;transition:border-color .15s,transform .15s}
+.quick:hover{border-color:var(--y);transform:translateY(-2px)}
+.qi{width:44px;height:44px;border-radius:10px;background:var(--ytint);color:var(--y);display:grid;place-items:center;flex:none}
+.mini{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.mini:last-child{border:0}
+.mini img{width:34px;height:34px;border-radius:50%;background:#222}
+.mini .grow{flex:1;min-width:0}
+.mini b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tips{margin:0;padding-left:18px;display:grid;gap:8px;color:#cfcfcf}
+.tips b{color:var(--y)}
+
+/* ---------- üyeler ---------- */
+.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;padding:12px 14px}
+.toolbar select{width:auto;min-width:170px}
+.tb-search{position:relative;flex:1;min-width:200px}
+.tb-search .ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--mute)}
+.tb-search input{padding-left:36px}
+.mlist{gap:12px}
+.mrow{display:grid;grid-template-columns:48px minmax(0,1fr);gap:14px;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;transition:border-color .15s}
+.mrow:hover{border-color:#3d3d3d}
+.mrow>img{width:48px;height:48px;border-radius:50%;background:#222}
+.mhead{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mhead b{font-size:15px}
+.nick{display:flex;gap:8px;margin:10px 0}
+.nick input{flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips select{width:auto;padding:4px 28px 4px 10px;font-size:12px;border-radius:999px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#0e0e0e;border:1px solid var(--line2);border-radius:999px;padding:2px 10px;font-size:12px}
+.chip .dot{width:9px;height:9px;border-radius:50%}
+.chip b{cursor:pointer;color:#888;font-size:14px;line-height:1}
+.chip b:hover{color:var(--red)}
+
+/* ---------- DM ---------- */
+.pane{margin-top:14px}
+.pickbox{margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden;max-height:300px;overflow-y:auto;background:#0c0c0c}
+.pick{display:flex;gap:10px;align-items:center;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--line)}
+.pick:last-child{border:0}
+.pick:hover{background:var(--ytint)}
+.pick img{width:32px;height:32px;border-radius:50%;background:#222}
+.target{display:flex;gap:12px;align-items:center;margin-top:14px;padding:12px;border:1px solid var(--yd);background:var(--ytint);border-radius:10px}
+.target img{width:42px;height:42px;border-radius:50%;background:#222}
+.target .grow{flex:1;min-width:0}
+.target.none{border:1px dashed var(--line2);background:transparent;color:var(--mute)}
+.counter{font-size:12px;color:var(--mute);text-align:right}
+.hist{display:grid;gap:8px;max-height:320px;overflow:auto}
+.hi{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#0e0e0e;border-left:3px solid var(--green)}
+.hi.bad{border-left-color:var(--red)}
+.hi p{margin:4px 0 0;color:#cfcfcf;white-space:pre-wrap;word-break:break-word;font-size:13px}
+
+/* ---------- discord önizleme ---------- */
+.dc{background:#313338;border-radius:10px;padding:14px 16px;color:#dbdee1;font-family:"gg sans","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.4;overflow:hidden}
+.dc .m{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px}
+.dc .av{width:40px;height:40px;border-radius:50%;background:var(--y);display:grid;place-items:center;color:#111}
+.dc .nm{display:flex;gap:6px;align-items:center;margin-bottom:2px}
+.dc .nm b{color:#f2f3f5;font-weight:600}
+.dc .botTag{background:#5865f2;color:#fff;font-size:10px;padding:0 4px;border-radius:3px;font-weight:600;line-height:15px}
+.dc .time{font-size:12px;color:#949ba4}
+.dc .txt{white-space:pre-wrap;word-break:break-word}
+.dc .ph{color:#6d717a;font-style:italic}
+.mention{background:rgba(88,101,242,.3);color:#c9cdfb;border-radius:3px;padding:0 2px}
+.emb{position:relative;margin-top:6px;max-width:520px;background:#2b2d31;border-left:4px solid #ffc400;border-radius:4px;padding:8px 16px 14px 12px;display:grid;gap:6px}
+.emb.hasthumb{padding-right:100px}
+.emb-author{font-size:14px;font-weight:600;color:#f2f3f5}
+.emb-title{font-weight:700;color:#f2f3f5;font-size:16px}
+.emb-title.link{color:#00a8fc}
+.emb-desc{font-size:14px;white-space:pre-wrap;word-break:break-word}
+.emb-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.emb-f{grid-column:1/-1;min-width:0}
+.emb-f.inl{grid-column:auto}
+.emb-f b{display:block;font-size:14px;color:#f2f3f5}
+.emb-f span{font-size:14px;white-space:pre-wrap;word-break:break-word}
+.emb-img{max-width:100%;border-radius:4px;max-height:300px;object-fit:contain;justify-self:start}
+.emb-thumb{position:absolute;right:12px;top:8px;width:72px;height:72px;border-radius:4px;object-fit:cover}
+.emb-foot{font-size:12px;color:#b5bac1}
+
+/* ---------- mesaj gönder ---------- */
+.swatches{display:flex;gap:6px;flex-wrap:wrap}
+.sw{width:26px;height:26px;border-radius:50%;border:2px solid #000;cursor:pointer;outline:1px solid var(--line2);padding:0}
+.sw:hover{outline-color:var(--y)}
+.fld{display:grid;grid-template-columns:1fr 1.4fr auto auto;gap:8px;align-items:center;margin-bottom:8px}
+.sticky{position:sticky;top:84px}
+.box{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px;background:#101010}
+.box>.lbl2{display:block;margin-bottom:12px;color:var(--y)}
+
+/* ---------- mesaj temizle ---------- */
+.warn{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--yd);background:rgba(255,196,0,.08);border-radius:10px;margin-bottom:14px;color:#ecd68a}
+.warn .ic{color:var(--y);margin-top:2px}
+.bar{position:sticky;top:76px;z-index:20;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 14px;margin-bottom:12px;border-color:var(--yd)}
+.list{border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden}
+.msg{display:grid;grid-template-columns:22px 40px minmax(0,1fr) auto;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);align-items:start;cursor:pointer;transition:background .12s}
+.msg:last-child{border:0}
+.msg:hover{background:#181818}
+.msg.sel{background:rgba(255,196,0,.07);box-shadow:inset 3px 0 0 var(--y)}
+.msg>img{width:40px;height:40px;border-radius:50%;background:#222}
+.msg .mh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.msg .mh b{font-size:14px}
+.meta{color:var(--mute);font-size:12px}
+.msg .text{white-space:pre-wrap;word-break:break-word;max-height:104px;overflow:hidden;margin-top:2px;color:#e2e2e2}
+.msg .text.open{max-height:none}
+.msg .text.ph{color:#666;font-style:italic}
+.more{background:none;border:0;color:var(--y);cursor:pointer;padding:0;font-size:12px;margin-top:2px}
+.atts{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.atts img{max-height:110px;max-width:220px;border-radius:8px;border:1px solid var(--line2);display:block;background:#0c0c0c}
+.attf{display:inline-flex;gap:6px;align-items:center;padding:3px 10px;border:1px solid var(--line2);border-radius:8px;font-size:12px;text-decoration:none;background:#0e0e0e}
+.old{background:#2a2000;color:var(--y);border:1px solid var(--yd);font-size:10px;font-weight:700;padding:0 6px;border-radius:4px;letter-spacing:.04em}
+
+/* ---------- toast / modal ---------- */
+#toasts{position:fixed;right:18px;bottom:18px;display:grid;gap:10px;z-index:400;max-width:calc(100vw - 36px)}
+.toast{background:#151515;border:1px solid var(--line2);border-left:4px solid var(--y);padding:11px 14px;border-radius:8px;min-width:240px;max-width:400px;box-shadow:0 12px 34px rgba(0,0,0,.55);animation:slide .25s ease;transition:opacity .3s;word-break:break-word}
+.toast.err{border-left-color:var(--red)}
+.toast.ok{border-left-color:var(--green)}
+.toast a{display:inline-block;margin-top:4px;font-size:12.5px}
+@keyframes slide{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:grid;place-items:center;z-index:300;padding:16px;animation:fade .15s}
+.dlg{background:var(--card);border:1px solid var(--line2);border-radius:14px;max-width:460px;width:100%;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.dlg .hd{height:7px;background:var(--stripe)}
+.dlg .bd{padding:20px;display:grid;gap:10px}
+.dlg h3{font-size:17px}
+.dlg .ft{display:flex;gap:10px;justify-content:flex-end;padding:0 20px 20px}
+.prog{height:10px;background:#0c0c0c;border-radius:6px;overflow:hidden;border:1px solid var(--line2)}
+.prog i{display:block;height:100%;width:0;background:var(--stripe);background-size:26px 26px;animation:mv 1s linear infinite;transition:width .2s}
+@keyframes mv{to{background-position:26px 0}}
+
+
+/* ---------- yeni özellikler ---------- */
+.bm{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);align-items:start}
+.bm:last-child{border:0}
+.bm>img{width:40px;height:40px;border-radius:50%;background:#222}
+.bm .mh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bm .text{white-space:pre-wrap;word-break:break-word;max-height:120px;overflow:hidden;margin-top:2px;color:#e2e2e2}
+.bm .text.ph{color:#666;font-style:italic}
+.bm-act{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.bm-act a{text-decoration:none}
+a.btn{text-decoration:none}
+.code{background:#0c0c0c;border:1px solid var(--line2);border-radius:8px;padding:10px 12px;margin:6px 0 10px -18px;overflow:auto;font:12px/1.5 Consolas,monospace;color:#e8d38a}
+
+/* ---------- mobil ---------- */
+@media (max-width:1000px){.split,.g2{grid-template-columns:1fr}.sticky{position:static}}
+@media (max-width:900px){
+  #shell{grid-template-columns:1fr}
+  #side{position:fixed;left:0;top:0;width:282px;transform:translateX(-100%);transition:transform .25s}
+  #side.open{transform:none}
+  .hamb{display:inline-flex}
+  .page{padding:14px}
+  .topbar{padding:0 14px}
+  .status{display:none}
+  .row2{grid-template-columns:1fr}
+  .msg{grid-template-columns:22px 34px minmax(0,1fr)}
+  .msg>.act{grid-column:3}
+  .msg>img{width:34px;height:34px}
+  .fld{grid-template-columns:1fr 1fr}
+  .bar{top:66px}
+}
 </style>
 </head>
 <body>
-<svg style="display:none">
-<symbol id="i-home" viewBox="0 0 24 24"><path d="M12.5 3.2a1 1 0 0 0-1 0L3 8.1V21h7v-6h4v6h7V8.1z"/></symbol>
-<symbol id="i-search" viewBox="0 0 24 24"><path d="M10.5 3a7.5 7.5 0 1 0 4.6 13.4l4.8 4.8 1.4-1.4-4.8-4.8A7.5 7.5 0 0 0 10.5 3m0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11"/></symbol>
-<symbol id="i-lib" viewBox="0 0 24 24"><path d="M3 22V2h2v20zm5 0V2h2v20zm5.5-19.9 1.9-.5 5 19.4-1.9.5z"/></symbol>
-<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15a.5.5 0 0 0 .76.43l12.3-7.5a.5.5 0 0 0 0-.86L7.76 4.07A.5.5 0 0 0 7 4.5"/></symbol>
-<symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></symbol>
-<symbol id="i-next" viewBox="0 0 24 24"><path d="M6 5.5v13l9-6.5zM17 5h2v14h-2z"/></symbol>
-<symbol id="i-prev" viewBox="0 0 24 24"><path d="M18 5.5v13L9 12zM5 5h2v14H5z"/></symbol>
-<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21 10.6 19.8C5.4 15.1 2 12 2 8.3 2 5.3 4.3 3 7.2 3c1.7 0 3.4.8 4.8 2.1C13.4 3.8 15.1 3 16.8 3 19.7 3 22 5.3 22 8.3c0 3.700-3.400 6.800-8.600 11.500z"/></symbol>
-<symbol id="i-vol" viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9zm13.500 3a4.500 4.500 0 0 0-2.500-4v8a4.500 4.500 0 0 0 2.500-4m-2.500-8.800v2.100a7 7 0 0 1 0 13.400v2.100a9 9 0 0 0 0-17.600"/></symbol>
-<symbol id="i-back" viewBox="0 0 24 24"><path d="m15.500 4-8 8 8 8 1.400-1.400L10.300 12l6.600-6.600z"/></symbol>
-</svg>
 
-<aside class="side">
-  <nav class="box nav">
-    <div class="logo"><i>L</i>Lastify</div>
-    <button data-view="home" class="on"><svg><use href="#i-home"/></svg>Ana Sayfa</button>
-    <button data-view="search"><svg><use href="#i-search"/></svg>Ara</button>
-  </nav>
-  <section class="box lib">
-    <h2><svg><use href="#i-lib"/></svg>Kitaplığın</h2>
-    <div class="row" id="likedRow" tabindex="0" role="button">
-      <div class="ph"><svg><use href="#i-heart"/></svg></div>
-      <div><b>Beğenilen Şarkılar</b><small id="likedCount">0 şarkı</small></div>
+<div id="login">
+  <form class="login-card" id="loginForm">
+    <div class="stripe"></div>
+    <div class="lc-body">
+      <div class="logo big" id="loginLogo"></div>
+      <div>
+        <h2>Yönetim Paneli</h2>
+        <div class="hint">Devam etmek için panel şifreni gir.</div>
+      </div>
+      <div class="field" style="margin:0">
+        <label for="pw">Şifre</label>
+        <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••" autofocus>
+      </div>
+      <label class="check"><input type="checkbox" id="remember" checked> Bu cihazda beni hatırla</label>
+      <button class="btn" id="loginBtn" type="submit">Giriş yap</button>
+      <p class="err" id="loginErr"></p>
     </div>
-    <div id="recent"></div>
-  </section>
-</aside>
+  </form>
+</div>
 
-<main class="main" id="scroller">
-  <div class="top">
-    <div class="circ"><svg><use href="#i-back"/></svg></div>
-    <form id="form">
-      <svg><use href="#i-search"/></svg>
-      <input id="q" type="search" placeholder="Ne dinlemek istiyorsun?" autocomplete="off">
-    </form>
-  </div>
-  <div class="content" id="content"></div>
-</main>
-
-<footer class="bar">
-  <div class="now">
-    <img id="cover" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="">
-    <div><b id="ttl">Şarkı seçilmedi</b><small id="art">Bir şarkı seç ve çalmaya başla</small></div>
-    <button class="like" id="likeBtn" aria-label="Beğen"><svg><use href="#i-heart"/></svg></button>
-  </div>
-  <div class="ctr">
-    <div class="btns">
-      <button class="sk" id="prev" aria-label="Önceki"><svg><use href="#i-prev"/></svg></button>
-      <button class="pp" id="pp" aria-label="Çal / Duraklat"><svg><use href="#i-play"/></svg></button>
-      <button class="sk" id="next" aria-label="Sonraki"><svg><use href="#i-next"/></svg></button>
+<div id="shell" hidden>
+  <aside id="side">
+    <div class="stripe"></div>
+    <div class="brand"><div class="logo" id="sideLogo"></div><div><b>Yönetim</b><small>DISCORD PANELİ</small></div></div>
+    <div class="guild" id="guildCard"></div>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <button class="btn ghost" id="refreshBtn" type="button">Verileri yenile</button>
+      <button class="btn ghost" id="logoutBtn" type="button">Çıkış yap</button>
     </div>
-    <div class="prog">
-      <span id="cur">0:00</span>
-      <input type="range" id="seek" min="0" max="1000" value="0" aria-label="İlerleme">
-      <span id="dur">0:00</span>
+  </aside>
+  <main>
+    <div class="stripe"></div>
+    <div class="topbar">
+      <button class="btn ghost icon hamb" id="hamb" type="button" aria-label="Menü"></button>
+      <div><h1 id="pgTitle"></h1><p id="pgSub"></p></div>
+      <div class="sp"></div>
+      <span class="status"><i></i>Bağlı</span>
     </div>
-  </div>
-  <div class="vol">
-    <svg><use href="#i-vol"/></svg>
-    <input type="range" id="vol" min="0" max="100" value="80" aria-label="Ses">
-  </div>
-</footer>
+    <section class="page" id="p-home"></section>
+    <section class="page" id="p-members"></section>
+    <section class="page" id="p-dm"></section>
+    <section class="page" id="p-send"></section>
+    <section class="page" id="p-purge"></section>
+    <section class="page" id="p-autorole"></section>
+    <section class="page" id="p-botmsg"></section>
+    <section class="page" id="p-pollev"></section>
+    <section class="page" id="p-ticket"></section>
+    <section class="page" id="p-mod"></section>
+  </main>
+</div>
+<div id="scrim" hidden></div>
+<div id="toasts"></div>
 
-<nav class="mnav">
-  <button data-view="home" class="on"><svg><use href="#i-home"/></svg>Ana Sayfa</button>
-  <button data-view="search"><svg><use href="#i-search"/></svg>Ara</button>
-  <button data-view="liked"><svg><use href="#i-heart"/></svg>Beğenilenler</button>
-</nav>
-<div id="yt"><div id="ytp"></div></div>
-
-<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const $ = id => document.getElementById(id);
-const content = $("content"), qInput = $("q");
-const FALLBACK = ["https://inv.nadeko.net","https://invidious.nerdvpn.de","https://invidious.tiekoetter.com"];
-const GENRES = ["Pop","Rock","Rap","Türkçe Pop","Arabesk","Lo-fi","Jazz","Klasik","Elektronik","Akustik"];
+"use strict";
+/* =====================  YARDIMCILAR  ===================== */
+const $ = (s, r = document) => r.querySelector(s);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const IDRE = /^\d{15,22}$/;
+const DAY = 864e5;
 
-let queue = [], idx = -1, player = null, ready = false, timer = null, view = "home", lastQuery = "";
-let liked = load("lastify_liked", []), recent = load("lastify_recent", []);
+const ICONS = {
+  home: '<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+  users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/>',
+  send: '<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/>',
+  trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/>',
+  bolt: '<path d="M13 2L3 14h9l-1 8 10-12h-9z"/>',
+  refresh: '<path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 15-3.4L23 10M1 14l4.5 4.4A9 9 0 0 0 20.5 15"/>',
+  logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',
+  search: '<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>',
+  x: '<path d="M18 6L6 18M6 6l12 12"/>',
+  check: '<path d="M20 6L9 17l-5-5"/>',
+  menu: '<path d="M3 6h18M3 12h18M3 18h18"/>',
+  alert: '<path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  hash: '<path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/>',
+  bot: '<rect x="3" y="8" width="18" height="12" rx="3"/><path d="M12 8V4M8 14h.01M16 14h.01"/>',
+  file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  ticket: '<path d="M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 0 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/><path d="M13 5v14"/>',
+  calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  pin: '<path d="M12 17v5"/><path d="M9 3h6l-1 7 3 3v2H7v-2l3-3z"/>',
+  smile: '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>',
+  poll: '<path d="M18 20V10M12 20V4M6 20v-6"/>',
+  userplus: '<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/>',
+  ban: '<circle cx="12" cy="12" r="10"/><path d="M4.9 4.9l14.2 14.2"/>',
+};
+function icon(n, s = 18) {
+  const e = document.createElement("span");
+  e.className = "ic";
+  e.innerHTML = `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n] || ""}</svg>`;
+  return e;
+}
 
-function load(k, d){ try { return JSON.parse(localStorage.getItem(k)) || d } catch { return d } }
-function save(k, v){ try { localStorage.setItem(k, JSON.stringify(v)) } catch {} }
-const thumb = id => "https://i.ytimg.com/vi/" + encodeURIComponent(id) + "/mqdefault.jpg";
-const fmt = s => { s = Math.max(0, s|0); return (s/60|0) + ":" + String(s%60).padStart(2,"0") };
-const icon = n => { const s = document.createElementNS("http://www.w3.org/2000/svg","svg"); const u = document.createElementNS("http://www.w3.org/2000/svg","use"); u.setAttribute("href","#i-"+n); s.appendChild(u); return s };
-const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e };
-
-/* ---------- Arama ---------- */
-async function fetchTracks(q){
-  const clean = d => d.filter(x => x.type === "video" && typeof x.videoId === "string" && typeof x.title === "string")
-    .slice(0, 40).map(x => ({ videoId: x.videoId, title: x.title, author: x.author || "Bilinmeyen sanatçı" }));
-  try {
-    const r = await fetch("/api/search?q=" + encodeURIComponent(q), { signal: AbortSignal.timeout(12000) });
-    if (r.ok) { const d = await r.json(); if (Array.isArray(d)) return d.map(x => ({ videoId: x.videoId, title: x.title, author: x.author || "Bilinmeyen sanatçı" })); }
-  } catch {}
-  for (const base of FALLBACK) {
-    try {
-      const u = new URL("/api/v1/search", base);
-      u.searchParams.set("q", q); u.searchParams.set("type", "video");
-      const r = await fetch(u, { signal: AbortSignal.timeout(9000), headers: { Accept: "application/json" } });
-      if (!r.ok) continue;
-      const d = await r.json();
-      if (Array.isArray(d)) return clean(d);
-    } catch {}
+// güvenli DOM üretici (innerHTML kullanmaz)
+function h(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === "class") e.className = v;
+    else if (k === "style") e.style.cssText = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else if (k in e && typeof v !== "object") e[k] = v;
+    else e.setAttribute(k, v === true ? "" : v);
   }
-  return null;
+  for (const c of kids.flat(Infinity)) {
+    if (c == null || c === false) continue;
+    e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  }
+  return e;
 }
 
-async function doSearch(q){
-  q = q.trim(); if (!q) return;
-  lastQuery = q; setView("search", true);
-  content.replaceChildren(msg("Aranıyor...", q));
-  const tracks = await fetchTracks(q);
-  if (q !== lastQuery) return;
-  if (tracks === null) return content.replaceChildren(msg("Arama sunucularına bağlanılamadı", "Biraz sonra tekrar dene."));
-  if (!tracks.length) return content.replaceChildren(msg("Sonuç bulunamadı", "“" + q + "” için sonuç yok. Yazımı kontrol et ya da başka bir şey ara."));
-  renderGrid("“" + q + "” için sonuçlar", tracks);
+const snow = (id) => Number((BigInt(id) >> 22n) + 1420070400000n);
+const OLD_LIMIT = () => Date.now() - 14 * DAY + 5 * 60e3; // 14 gün (5 dk güvenlik payı)
+const dname = (u) => u.nick || u.globalName || u.username;
+function avatar(u, size = 64) {
+  if (u.avatar) return `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith("a_") ? "gif" : "png"}?size=${size}`;
+  return `https://cdn.discordapp.com/embed/avatars/${Number((BigInt(u.id) >> 22n) % 6n)}.png`;
+}
+const avImg = (u) => h("img", { src: avatar(u), alt: "", loading: "lazy", referrerpolicy: "no-referrer" });
+function ago(t) {
+  const s = Math.floor((Date.now() - new Date(t)) / 1000);
+  if (s < 60) return "az önce";
+  const m = Math.floor(s / 60); if (m < 60) return m + " dk önce";
+  const hr = Math.floor(m / 60); if (hr < 24) return hr + " sa önce";
+  const d = Math.floor(hr / 24); if (d < 30) return d + " gün önce";
+  const mo = Math.floor(d / 30); if (mo < 12) return mo + " ay önce";
+  return Math.floor(d / 365) + " yıl önce";
+}
+const fmtDate = (t) => new Date(t).toLocaleString("tr-TR");
+const fmtSize = (b) => (b > 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB");
+const hex = (n) => (n ? "#" + n.toString(16).padStart(6, "0") : "#99aab5");
+
+function toast(msg, type = "info", link) {
+  const t = h("div", { class: "toast " + type }, h("div", {}, msg),
+    link ? h("a", { href: link.href, target: "_blank", rel: "noopener" }, link.text) : null);
+  $("#toasts").append(t);
+  setTimeout(() => { t.style.opacity = 0; setTimeout(() => t.remove(), 320); }, type === "err" ? 6500 : 3500);
 }
 
-function msg(title, sub){ const d = el("div","msg"); d.append(el("b",null,title), document.createTextNode(sub || "")); return d }
-
-/* ---------- Görünümler ---------- */
-function setView(v, keep){
-  view = v;
-  document.querySelectorAll("[data-view]").forEach(b => b.classList.toggle("on", b.dataset.view === (v === "liked" ? "" : v)));
-  if (keep) return;
-  if (v === "home") renderHome();
-  if (v === "search"){ content.replaceChildren(msg("Ara", "Şarkı, sanatçı ya da bir tür yaz.")); qInput.focus() }
-  if (v === "liked") liked.length ? renderGrid("Beğenilen Şarkılar", liked) : content.replaceChildren(msg("Henüz beğendiğin şarkı yok", "Çalan şarkının yanındaki kalbe dokun, burada görünsün."));
-}
-
-function renderHome(){
-  const wrap = el("div");
-  wrap.append(el("h2", null, "Türlere göz at"));
-  const chips = el("div","chips");
-  GENRES.forEach(g => { const b = el("button","chip",g); b.onclick = () => { qInput.value = g; doSearch(g) }; chips.appendChild(b) });
-  wrap.appendChild(chips);
-  if (recent.length){ wrap.appendChild(el("h2", null, "Son çaldıkların")); wrap.appendChild(buildGrid(recent)) }
-  else wrap.appendChild(msg("Müzik seni bekliyor", "Yukarıdan ara ya da bir türe dokun."));
-  content.replaceChildren(wrap);
-}
-
-function buildGrid(tracks){
-  const g = el("div","grid");
-  tracks.forEach((t, i) => {
-    const c = el("article","card"); c.tabIndex = 0; c.dataset.id = t.videoId;
-    const cv = el("div","cv"); const img = el("img"); img.loading = "lazy"; img.alt = ""; img.src = thumb(t.videoId);
-    const pl = el("div","pl"); pl.appendChild(icon("play")); cv.append(img, pl);
-    c.append(cv, el("h3",null,t.title), el("p",null,t.author));
-    const go = () => playList(tracks, i);
-    c.onclick = go; c.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); go() } };
-    g.appendChild(c);
+function confirmBox({ title, text, ok = "Onayla", danger = false }) {
+  return new Promise((res) => {
+    const close = (v) => { ov.remove(); document.removeEventListener("keydown", key); res(v); };
+    const key = (e) => { if (e.key === "Escape") close(false); };
+    const ov = h("div", { class: "overlay", onclick: (e) => { if (e.target === ov) close(false); } },
+      h("div", { class: "dlg" }, h("div", { class: "hd" }),
+        h("div", { class: "bd" }, h("h3", {}, title), h("div", { style: "color:#cfcfcf;white-space:pre-line" }, text)),
+        h("div", { class: "ft" },
+          h("button", { class: "btn ghost", type: "button", onclick: () => close(false) }, "Vazgeç"),
+          h("button", { class: "btn" + (danger ? " danger" : ""), type: "button", onclick: () => close(true) }, ok))));
+    document.addEventListener("keydown", key);
+    document.body.append(ov);
   });
-  return g;
-}
-function renderGrid(title, tracks){
-  const w = el("div"); w.append(el("h2", null, title), buildGrid(tracks)); content.replaceChildren(w); markCurrent();
-}
-function markCurrent(){
-  const id = queue[idx]?.videoId;
-  document.querySelectorAll(".card").forEach(c => c.classList.toggle("cur", c.dataset.id === id));
-  document.querySelectorAll("#recent .row").forEach(r => r.classList.toggle("cur", r.dataset.id === id));
 }
 
-/* ---------- Kitaplık ---------- */
-function renderLib(){
-  $("likedCount").textContent = liked.length + " şarkı";
-  const box = $("recent"); box.replaceChildren();
-  recent.slice(0, 20).forEach((t, i) => {
-    const r = el("div","row"); r.tabIndex = 0; r.dataset.id = t.videoId;
-    const img = el("img"); img.src = thumb(t.videoId); img.alt = ""; img.loading = "lazy";
-    const d = el("div"); d.append(el("b",null,t.title), el("small",null,t.author));
-    r.append(img, d); r.onclick = () => playList(recent, i);
-    r.onkeydown = e => { if (e.key === "Enter") playList(recent, i) };
-    box.appendChild(r);
+function progressBox(title) {
+  let cancelled = false;
+  const bar = h("i");
+  const txt = h("div", { class: "hint" }, "Başlıyor…");
+  const stop = h("button", { class: "btn ghost", type: "button", onclick: () => { cancelled = true; stop.disabled = true; stop.textContent = "Durduruluyor…"; } }, "Durdur");
+  const ov = h("div", { class: "overlay" }, h("div", { class: "dlg" }, h("div", { class: "hd" }),
+    h("div", { class: "bd" }, h("h3", {}, title), txt, h("div", { class: "prog" }, bar)), h("div", { class: "ft" }, stop)));
+  document.body.append(ov);
+  return {
+    update(d, t, extra = "") { bar.style.width = (t ? (d / t) * 100 : 0) + "%"; txt.textContent = `${d} / ${t} ${extra}`; },
+    get cancelled() { return cancelled; },
+    close() { ov.remove(); },
+  };
+}
+
+/* =====================  API  ===================== */
+let PW = "", guild = null, roles = [], members = [], channels = [], categories = [];
+
+function friendly(d) {
+  const map = {
+    50007: "Kullanıcı özel mesajlarını kapatmış (ya da botla DM'e izin vermiyor). Mesaj gönderilemedi.",
+    50013: "Botun bu işlem için izni yok (Missing Permissions). Bot rolünün sırasını ve izinlerini kontrol et.",
+    50001: "Botun bu kanala erişimi yok (Missing Access). Kanal izinlerini kontrol et.",
+    10007: "Üye bulunamadı (sunucudan ayrılmış olabilir).", 10026: "Bu kullanıcı yasaklı değil.", 10014: "Bilinmeyen emoji.",
+    50005: "Bu mesajı yalnızca gönderen düzenleyebilir (bot yalnızca kendi mesajlarını düzenler).", 30003: "Sabit mesaj sınırına ulaşıldı (kanal başına 50).",
+    10003: "Kanal bulunamadı.", 10013: "Kullanıcı bulunamadı.", 10008: "Mesaj bulunamadı (zaten silinmiş olabilir).", 50006: "Boş mesaj gönderilemez.",
+  };
+  return d && map[d.code];
+}
+async function api(action, { method = "GET", query = {}, body } = {}) {
+  const qs = new URLSearchParams({ a: action, ...query });
+  const r = await fetch(`/api/panel?${qs}`, {
+    method,
+    headers: { "x-panel-password": PW, "content-type": "application/json" },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
   });
-  markCurrent();
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    const e = new Error(friendly(d) || d.error || "Hata " + r.status);
+    e.code = d.code; e.status = r.status;
+    throw e;
+  }
+  return d;
 }
 
-/* ---------- Oynatıcı ---------- */
-window.onYouTubeIframeAPIReady = () => {
-  player = new YT.Player("ytp", {
-    height: "200", width: "200",
-    playerVars: { playsinline: 1, controls: 0, rel: 0 },
-    events: {
-      onReady: () => { ready = true; player.setVolume($("vol").value); if (idx >= 0) player.loadVideoById(queue[idx].videoId) },
-      onStateChange: e => {
-        const playing = e.data === YT.PlayerState.PLAYING;
-        $("pp").firstChild.replaceWith(icon(playing ? "pause" : "play"));
-        if (e.data === YT.PlayerState.ENDED) step(1);
-      },
-      onError: () => step(1)
+/* =====================  GEZİNME  ===================== */
+const PAGES = [
+  { id: "home", group: "Yönetim", title: "Genel Bakış", sub: "Sunucunun özeti ve hızlı işlemler", icon: "home" },
+  { id: "members", group: "Yönetim", title: "Üyeler", sub: "Rolleri ve takma adları yönet", icon: "users" },
+  { id: "autorole", group: "Yönetim", title: "Otomatik Rol", sub: "Yeni katılan üyelere otomatik rol ver", icon: "userplus" },
+  { id: "dm", group: "Mesajlaşma", title: "Özel Mesaj (DM)", sub: "Bir kullanıcıya bot adına özel mesaj gönder", icon: "mail" },
+  { id: "send", group: "Mesajlaşma", title: "Mesaj Gönder", sub: "Kanallara düz mesaj, embed veya duyuru gönder", icon: "send" },
+  { id: "botmsg", group: "Mesajlaşma", title: "Bot Mesajları", sub: "Botun mesajlarını düzenle, tepki ekle, sabitle", icon: "edit" },
+  { id: "pollev", group: "Mesajlaşma", title: "Anket & Etkinlik", sub: "Anket gönder, sunucu etkinliği oluştur", icon: "calendar" },
+  { id: "ticket", group: "Destek", title: "Ticket Sistemi", sub: "Butonlu destek bileti paneli ve açık biletler", icon: "ticket" },
+  { id: "purge", group: "Moderasyon", title: "Mesaj Temizle", sub: "Bir kanaldaki mesajları gör, tek tek ya da toplu sil", icon: "trash" },
+  { id: "mod", group: "Moderasyon", title: "Üye Moderasyonu", sub: "Sustur, at, yasakla ve yasak listesini yönet", icon: "ban" },
+];
+function buildNav() {
+  const nav = $("#nav"); nav.replaceChildren();
+  let g = "";
+  for (const p of PAGES) {
+    if (p.group !== g) { g = p.group; nav.append(h("div", { class: "grp" }, g)); }
+    nav.append(h("a", { "data-p": p.id, onclick: () => go(p.id) }, icon(p.icon), p.title));
+  }
+}
+function go(id) {
+  const p = PAGES.find((x) => x.id === id) || PAGES[0];
+  document.querySelectorAll(".page").forEach((s) => s.classList.toggle("active", s.id === "p-" + p.id));
+  document.querySelectorAll("#nav a").forEach((a) => a.classList.toggle("active", a.dataset.p === p.id));
+  $("#pgTitle").textContent = p.title;
+  $("#pgSub").textContent = p.sub;
+  closeDrawer();
+  window.scrollTo(0, 0);
+  try { localStorage.setItem("dp2page", p.id); } catch {}
+  if (inited) { const hook = { ticket: () => Tkt.loadList(), pollev: () => PollEv.loadEvents() }[p.id]; if (hook) hook(); }
+}
+const openDrawer = () => { $("#side").classList.add("open"); $("#scrim").hidden = false; };
+const closeDrawer = () => { $("#side").classList.remove("open"); $("#scrim").hidden = true; };
+
+/* kanal seçici (gruplu) */
+function fillChannelSelect(sel, keep, filter) {
+  const cur = keep ? sel.value : "";
+  sel.replaceChildren(new Option("Kanal seç…", ""));
+  const mk = (c) => new Option(({ 0: "# ", 5: "📢 ", 2: "🔊 ", 13: "🎙 " }[c.type] || "# ") + c.name, c.id);
+  const groups = new Map();
+  for (const c of (filter ? channels.filter(filter) : channels)) { const k = c.category || ""; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(c); }
+  for (const [k, list] of groups) {
+    if (!k) list.forEach((c) => sel.append(mk(c)));
+    else { const og = document.createElement("optgroup"); og.label = k.toUpperCase(); list.forEach((c) => og.append(mk(c))); sel.append(og); }
+  }
+  if (cur && channels.some((c) => c.id === cur && (!filter || filter(c)))) sel.value = cur;
+}
+
+/* =====================  GENEL BAKIŞ  ===================== */
+const Home = {
+  render() {
+    const root = $("#p-home");
+    const humans = members.filter((m) => !m.bot).length;
+    const stat = (n, l, i) => h("div", { class: "card stat" }, h("div", { class: "si" }, icon(i, 22)), h("div", { class: "num" }, String(n)), h("div", { class: "lbl" }, l));
+    const quick = (id, i, t, d) => h("div", { class: "card quick", onclick: () => go(id) }, h("div", { class: "qi" }, icon(i, 22)), h("div", {}, h("b", {}, t), h("div", { class: "hint" }, d)));
+    const recent = members.filter((m) => m.joinedAt).sort((a, b) => new Date(b.joinedAt) - new Date(a.joinedAt)).slice(0, 8);
+    root.replaceChildren(
+      h("div", { class: "grid stats" },
+        stat(members.length, "Toplam üye", "users"), stat(humans, "Kullanıcı", "user"), stat(members.length - humans, "Bot", "bot"),
+        stat(roles.length, "Rol", "shield"), stat(channels.length, "Kanal", "hash"), stat(guild.online ?? "—", "Çevrimiçi (yakl.)", "bolt")),
+      h("div", { class: "sec" }, "Hızlı işlemler"),
+      h("div", { class: "grid quicks" },
+        quick("members", "users", "Üyeleri yönet", "Rol ver, rol al, takma ad değiştir"),
+        quick("dm", "mail", "Özel mesaj gönder", "ID ile ya da sunucudan seçerek"),
+        quick("send", "send", "Mesaj / Embed / Duyuru", "İstediğin kanala bot adıyla gönder"),
+        quick("purge", "trash", "Mesaj temizle", "Kanaldaki mesajları gör ve sil")),
+      h("div", { class: "grid g2", style: "margin-top:20px;align-items:start" },
+        h("div", { class: "card" }, h("h3", {}, "Son katılanlar"), h("div", { class: "desc" }, "Sunucuya en son giren üyeler"),
+          recent.length ? recent.map((m) => h("div", { class: "mini" }, avImg(m),
+            h("div", { class: "grow" }, h("b", {}, dname(m)), h("div", { class: "hint" }, "@" + m.username + " · " + ago(m.joinedAt))),
+            h("button", { class: "btn ghost sm", type: "button", onclick: () => { Dm.pick(m); go("dm"); } }, icon("mail", 14), "DM"))) : h("div", { class: "empty" }, "Veri yok")),
+        h("div", { class: "card" }, h("h3", {}, "Kurulum ipuçları"), h("div", { class: "desc" }, "Bir şey çalışmıyorsa önce bunlara bak"),
+          h("ul", { class: "tips" },
+            h("li", {}, h("b", {}, "Üye listesi boş: "), "Developer Portal → Bot → Server Members Intent'i aç."),
+            h("li", {}, h("b", {}, "Mesaj içerikleri boş: "), "Developer Portal → Bot → Message Content Intent'i aç."),
+            h("li", {}, h("b", {}, "Mesaj gönder/sil: "), "Bot rolüne Kanalı Görüntüle, Mesaj Geçmişini Oku, Mesaj Gönder, Bağlantı Yerleştir ve Mesajları Yönet izinlerini ver."),
+            h("li", {}, h("b", {}, "Rol verme: "), "Botun rolü, vereceği rollerin üstünde olmalı."),
+            h("li", {}, h("b", {}, "@everyone duyurusu: "), "Bota Herkesden Bahset (Mention Everyone) izni gerekir.")))));
+  },
+};
+
+/* =====================  ÜYELER  ===================== */
+const Mem = {
+  q: "", role: "", showBots: false, limit: 40,
+  init() {
+    const root = $("#p-members");
+    this.search = h("input", { placeholder: "İsim, takma ad veya ID ara…", oninput: (e) => { this.q = e.target.value.toLowerCase(); this.limit = 40; this.draw(); } });
+    this.roleSel = h("select", { onchange: (e) => { this.role = e.target.value; this.limit = 40; this.draw(); } });
+    this.botChk = h("input", { type: "checkbox", onchange: (e) => { this.showBots = e.target.checked; this.draw(); } });
+    this.count = h("span", { class: "hint" });
+    this.box = h("div", { class: "grid mlist" });
+    this.more = h("button", { class: "btn ghost", type: "button", onclick: () => { this.limit += 40; this.draw(); } }, "Daha fazla göster");
+    root.replaceChildren(
+      h("div", { class: "card toolbar" }, h("div", { class: "tb-search" }, icon("search", 16), this.search), this.roleSel,
+        h("label", { class: "check" }, this.botChk, "Botları göster"), this.count),
+      this.box, h("div", { style: "text-align:center;margin-top:14px" }, this.more));
+  },
+  fillRoles() {
+    this.roleSel.replaceChildren(new Option("Tüm roller", ""), ...roles.map((r) => new Option(r.name, r.id)));
+    this.roleSel.value = roles.some((r) => r.id === this.role) ? this.role : "";
+  },
+  draw() {
+    const list = members.filter((m) => (this.showBots || !m.bot) && (!this.role || m.roles.includes(this.role)) &&
+      (!this.q || `${m.username} ${m.globalName || ""} ${m.nick || ""} ${m.id}`.toLowerCase().includes(this.q)));
+    this.count.textContent = `${list.length} üye`;
+    this.box.replaceChildren(...list.slice(0, this.limit).map((m) => this.row(m)));
+    if (!list.length) this.box.append(h("div", { class: "empty" }, "Eşleşen üye yok."));
+    this.more.hidden = list.length <= this.limit;
+  },
+  row(m) {
+    const root = h("div", { class: "mrow" });
+    const fill = () => {
+      const rm = Object.fromEntries(roles.map((r) => [r.id, r]));
+      const nickIn = h("input", { placeholder: "Takma ad (boş = sıfırla)", value: m.nick || "", maxLength: 32, onkeydown: (e) => { if (e.key === "Enter") save.click(); } });
+      const save = h("button", { class: "btn sm", type: "button", onclick: async () => {
+        save.disabled = true;
+        try {
+          await api("nick", { method: "PATCH", query: { m: m.id }, body: { nick: nickIn.value.trim() } });
+          m.nick = nickIn.value.trim() || null;
+          toast("Takma ad güncellendi", "ok"); fill();
+        } catch (e) { toast(e.message, "err"); save.disabled = false; }
+      } }, "Kaydet");
+      const chips = h("div", { class: "chips" });
+      for (const r of roles.filter((x) => m.roles.includes(x.id))) {
+        chips.append(h("span", { class: "chip" }, h("span", { class: "dot", style: `background:${hex(r.color)}` }), r.name,
+          r.managed ? null : h("b", { title: "Rolü al", onclick: async () => {
+            try { await api("role", { method: "DELETE", query: { m: m.id, r: r.id } }); m.roles = m.roles.filter((i) => i !== r.id); toast(`"${r.name}" alındı`, "ok"); fill(); }
+            catch (e) { toast(e.message, "err"); }
+          } }, "×")));
+      }
+      const sel = h("select", { onchange: async () => {
+        const rid = sel.value; if (!rid) return;
+        try { await api("role", { method: "PUT", query: { m: m.id, r: rid } }); m.roles.push(rid); toast(`"${rm[rid].name}" verildi`, "ok"); fill(); }
+        catch (e) { toast(e.message, "err"); sel.value = ""; }
+      } }, new Option("+ Rol ver", ""), ...roles.filter((r) => !r.managed && !m.roles.includes(r.id)).map((r) => new Option(r.name, r.id)));
+      chips.append(sel);
+      root.replaceChildren(avImg(m), h("div", { style: "min-width:0" },
+        h("div", { class: "mhead" }, h("b", {}, dname(m)), m.bot ? h("span", { class: "tag" }, "BOT") : null,
+          h("span", { class: "hint" }, `@${m.username} · ${m.id}`), h("span", { class: "sp" }),
+          m.bot ? null : h("button", { class: "btn ghost sm", type: "button", onclick: () => { Dm.pick(m); go("dm"); } }, icon("mail", 14), "DM")),
+        h("div", { class: "nick" }, nickIn, save), chips));
+    };
+    fill();
+    return root;
+  },
+};
+
+/* =====================  ÖZEL MESAJ  ===================== */
+const Dm = {
+  mode: "id", target: null, history: [],
+  init() {
+    const root = $("#p-dm");
+    this.seg = h("div", { class: "seg" },
+      h("button", { type: "button", "data-k": "id", onclick: () => this.setMode("id") }, "Discord ID ile"),
+      h("button", { type: "button", "data-k": "pick", onclick: () => this.setMode("pick") }, "Sunucudan seç"));
+    this.idIn = h("input", { placeholder: "Örn. 123456789012345678", inputMode: "numeric", oninput: () => { this.target = null; this.drawTarget(); },
+      onkeydown: (e) => { if (e.key === "Enter") { e.preventDefault(); this.lookup(); } } });
+    this.lookBtn = h("button", { class: "btn", type: "button", onclick: () => this.lookup() }, icon("search", 16), "Kullanıcıyı bul");
+    this.idPane = h("div", { class: "pane" },
+      h("div", { class: "field" }, h("label", {}, "Kullanıcı ID"), h("div", { class: "inline", style: "flex-wrap:nowrap" }, this.idIn, this.lookBtn),
+        h("div", { class: "hint" }, "Discord'da Geliştirici Modu açıkken kullanıcıya sağ tıkla → Kullanıcı ID'sini kopyala. Sunucunda olmayan kişilere de gönderebilirsin (ortak sunucu ve açık DM gerekir).")));
+    this.pickIn = h("input", { placeholder: "İsim, takma ad veya ID ara…", oninput: () => this.drawResults() });
+    this.results = h("div", { class: "pickbox" });
+    this.pickPane = h("div", { class: "pane" }, h("div", { class: "tb-search" }, icon("search", 16), this.pickIn), this.results);
+    this.targetBox = h("div");
+    this.ta = h("textarea", { placeholder: "Göndermek istediğin mesajı yaz…", maxLength: 2000, style: "min-height:150px", oninput: () => { this.drawCount(); this.drawPreview(); } });
+    this.cnt = h("div", { class: "counter" });
+    this.sendBtn = h("button", { class: "btn", type: "button", onclick: () => this.send() }, icon("send", 16), "Mesajı gönder");
+    this.pv = h("div");
+    this.histBox = h("div", { class: "hist" });
+    root.replaceChildren(h("div", { class: "grid split" },
+      h("div", { class: "grid" },
+        h("div", { class: "card" }, h("h3", {}, "1 · Alıcı"), h("div", { class: "desc" }, "Mesajın kime gideceğini seç"), this.seg, this.idPane, this.pickPane, this.targetBox),
+        h("div", { class: "card" }, h("h3", {}, "2 · Mesaj"), h("div", { class: "desc" }, "Düz metin; **kalın**, *italik*, `kod` biçimlendirmesi çalışır"),
+          this.ta, this.cnt, h("div", { class: "inline", style: "margin-top:12px" }, this.sendBtn, h("span", { class: "hint" }, "Toplu/spam DM'ler hesabının kısıtlanmasına yol açabilir."))),
+      ),
+      h("div", { class: "grid sticky" },
+        h("div", { class: "card" }, h("h3", {}, "Önizleme"), h("div", { class: "desc" }, "Kullanıcı böyle görecek"), this.pv),
+        h("div", { class: "card" }, h("h3", {}, "Gönderim geçmişi"), h("div", { class: "desc" }, "Bu oturumda gönderilenler"), this.histBox))));
+    this.setMode("id"); this.drawResults(); this.drawCount(); this.drawHistory();
+  },
+  setMode(m, keep) {
+    this.mode = m;
+    this.seg.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.k === m));
+    this.idPane.hidden = m !== "id"; this.pickPane.hidden = m !== "pick";
+    if (!keep) { this.target = null; }
+    this.drawTarget();
+  },
+  pick(m) {
+    this.setMode("pick", true);
+    this.target = { id: m.id, username: m.username, globalName: m.globalName, nick: m.nick, avatar: m.avatar, inGuild: true };
+    this.drawTarget();
+  },
+  drawResults() {
+    if (!this.results) return;
+    const q = this.pickIn.value.trim().toLowerCase();
+    let list = members.filter((m) => !m.bot);
+    if (q) list = list.filter((m) => `${m.username} ${m.globalName || ""} ${m.nick || ""} ${m.id}`.toLowerCase().includes(q));
+    list = list.slice(0, 20);
+    this.results.replaceChildren(...(list.length ? list.map((m) => h("div", { class: "pick", onclick: () => this.pick(m) }, avImg(m),
+      h("div", {}, h("b", {}, dname(m)), h("div", { class: "hint" }, "@" + m.username)))) : [h("div", { class: "empty" }, "Eşleşen üye yok")]));
+  },
+  async lookup() {
+    const id = this.idIn.value.trim();
+    if (!IDRE.test(id)) return toast("Geçerli bir Discord ID'si gir (17–20 haneli sayı)", "err");
+    this.lookBtn.disabled = true;
+    try {
+      const u = await api("user", { query: { id } });
+      if (u.bot) toast("Bu bir bot hesabı; DM gönderilemeyebilir", "info");
+      this.target = { ...u, inGuild: members.some((m) => m.id === u.id) };
+      this.drawTarget();
+    } catch (e) { toast(e.message, "err"); }
+    finally { this.lookBtn.disabled = false; }
+  },
+  drawTarget() {
+    const t = this.target;
+    this.targetBox.replaceChildren(t
+      ? h("div", { class: "target" }, avImg(t), h("div", { class: "grow" }, h("b", {}, dname(t)), h("div", { class: "hint" }, `@${t.username} · ${t.id}`),
+          h("div", { class: "hint" }, t.inGuild ? "✓ Bu sunucunun üyesi" : "Bu sunucunun üyesi değil")),
+        h("button", { class: "btn ghost sm icon", type: "button", title: "Alıcıyı kaldır", onclick: () => { this.target = null; this.drawTarget(); } }, icon("x", 14)))
+      : h("div", { class: "target none" }, icon("user", 18), "Henüz alıcı seçilmedi"));
+    this.drawPreview();
+  },
+  drawCount() { this.cnt.textContent = `${this.ta.value.length} / 2000`; },
+  drawPreview() { this.pv.replaceChildren(dcMessage(h("span", {}, this.ta.value), null, this.target ? "Bot → " + dname(this.target) : "Bot")); },
+  drawHistory() {
+    this.histBox.replaceChildren(...(this.history.length ? this.history.map((x) => h("div", { class: "hi" + (x.ok ? "" : " bad") },
+      h("div", { class: "meta" }, `${x.ok ? "✓ Gönderildi" : "✕ Hata"} · ${x.name} · ${new Date(x.t).toLocaleTimeString("tr-TR")}`),
+      h("p", {}, x.ok ? x.text.slice(0, 160) : x.err))) : [h("div", { class: "empty" }, "Henüz gönderim yok")]));
+  },
+  async send() {
+    const text = this.ta.value.trim();
+    if (!this.target) return toast("Önce bir alıcı seç", "err");
+    if (!text) return toast("Mesaj boş olamaz", "err");
+    const name = dname(this.target);
+    this.sendBtn.disabled = true;
+    try {
+      await api("dm", { method: "POST", body: { userId: this.target.id, content: text } });
+      toast(`DM gönderildi → ${name}`, "ok");
+      this.history.unshift({ t: Date.now(), name, text, ok: true });
+      this.ta.value = ""; this.drawCount(); this.drawPreview();
+    } catch (e) {
+      toast(e.message, "err");
+      this.history.unshift({ t: Date.now(), name, text, ok: false, err: e.message });
+    } finally { this.sendBtn.disabled = false; this.drawHistory(); }
+  },
+};
+
+/* Discord tarzı mesaj önizlemesi */
+function dcMessage(contentNode, embedNode, who = "Bot") {
+  const empty = !contentNode || (contentNode.textContent || "").trim() === "";
+  return h("div", { class: "dc" }, h("div", { class: "m" }, h("div", { class: "av" }, icon("bolt", 20)),
+    h("div", { style: "min-width:0" },
+      h("div", { class: "nm" }, h("b", {}, who), h("span", { class: "botTag" }, "BOT"), h("span", { class: "time" }, "Bugün")),
+      empty && !embedNode ? h("div", { class: "txt ph" }, "Önizleme burada görünecek…") : null,
+      empty ? null : h("div", { class: "txt" }, contentNode), embedNode)));
+}
+
+/* =====================  MESAJ GÖNDER  ===================== */
+const COLORS = [["Sarı", "#ffc400"], ["Kırmızı", "#ed4245"], ["Yeşil", "#3ba55d"], ["Mavi", "#5865f2"], ["Mor", "#9b59b6"], ["Turuncu", "#f57c00"], ["Beyaz", "#ffffff"]];
+const Snd = {
+  mode: "plain", channel: "", content: "", ping: "none", pingRole: "", crosspost: true,
+  emb: { title: "", description: "", url: "", color: "#ffc400", author: "", thumb: "", image: "", footer: "", ts: false, fields: [] },
+  init() {
+    const root = $("#p-send");
+    const E = this.emb;
+    const bind = (el, obj, key) => { el.addEventListener("input", () => { obj[key] = el.type === "checkbox" ? el.checked : el.value; this.refresh(); }); return el; };
+    const fld = (label, el, hint) => h("div", { class: "field" }, h("label", {}, label), el, hint ? h("div", { class: "hint" }, hint) : null);
+
+    this.chSel = h("select", { onchange: (e) => { this.channel = e.target.value; this.refresh(); } });
+    this.modeSeg = h("div", { class: "seg" }, ...[["plain", "Düz mesaj"], ["embed", "Embed"], ["announce", "Duyuru"]].map(([k, l]) =>
+      h("button", { type: "button", "data-k": k, onclick: () => { this.mode = k; this.refresh(); } }, l)));
+    this.contentLbl = h("label", {}, "Mesaj");
+    this.contentTa = bind(h("textarea", { placeholder: "Mesaj içeriği…", maxLength: 2000 }), this, "content");
+    this.counter = h("div", { class: "counter" });
+
+    // embed bölümü
+    this.colorIn = bind(h("input", { type: "color", value: E.color }), E, "color");
+    const swatches = h("div", { class: "swatches" }, ...COLORS.map(([n, c]) => h("button", { class: "sw", type: "button", title: n, style: `background:${c}`,
+      onclick: () => { E.color = c; this.colorIn.value = c; this.refresh(); } })));
+    this.tsChk = bind(h("input", { type: "checkbox" }), E, "ts");
+    this.fieldsBox = h("div");
+    this.addFieldBtn = h("button", { class: "btn ghost sm", type: "button", onclick: () => { E.fields.push({ name: "", value: "", inline: false }); this.drawFields(); this.refresh(); } }, icon("plus", 14), "Alan ekle");
+    this.embSec = h("div", { class: "box" }, h("span", { class: "lbl2" }, "Embed (renkli kutu)"),
+      fld("Başlık", bind(h("input", { placeholder: "Başlık", maxLength: 256 }), E, "title")),
+      fld("Açıklama", bind(h("textarea", { placeholder: "Açıklama (4096 karaktere kadar)", maxLength: 4096, style: "min-height:110px" }), E, "description")),
+      h("div", { class: "row2" },
+        fld("Renk", h("div", { class: "inline" }, this.colorIn, swatches)),
+        fld("Başlık bağlantısı (URL)", bind(h("input", { placeholder: "https://…" }), E, "url"))),
+      h("div", { class: "row2" },
+        fld("Yazar adı", bind(h("input", { placeholder: "Üst küçük yazı", maxLength: 256 }), E, "author")),
+        fld("Alt bilgi", bind(h("input", { placeholder: "Alt küçük yazı", maxLength: 2048 }), E, "footer"))),
+      h("div", { class: "row2" },
+        fld("Küçük görsel (sağ üst) URL", bind(h("input", { placeholder: "https://…/resim.png" }), E, "thumb")),
+        fld("Büyük görsel URL", bind(h("input", { placeholder: "https://…/resim.png" }), E, "image"))),
+      h("label", { class: "check", style: "margin-bottom:14px" }, this.tsChk, "Zaman damgası ekle (gönderim anı)"),
+      h("div", { class: "lbl2", style: "margin-bottom:8px;display:block" }, "Alanlar"), this.fieldsBox, this.addFieldBtn);
+
+    // duyuru bölümü
+    this.pingSel = bind(h("select", {}, new Option("Etiket yok", "none"), new Option("@everyone", "everyone"), new Option("@here", "here"), new Option("Belirli bir rol…", "role")), this, "ping");
+    this.roleSel = bind(h("select", {}), this, "pingRole");
+    this.roleWrap = h("div", { class: "field" }, h("label", {}, "Etiketlenecek rol"), this.roleSel);
+    this.cpChk = bind(h("input", { type: "checkbox", checked: true }), this, "crosspost");
+    this.cpWrap = h("label", { class: "check" }, this.cpChk, "Duyuru kanalındaysa takipçi sunuculara da yayınla");
+    this.pingSec = h("div", { class: "box" }, h("span", { class: "lbl2" }, "Duyuru ayarları"),
+      fld("Etiket", this.pingSel, "@everyone / @here için botun “Herkesden Bahset” izni olmalı."), this.roleWrap, this.cpWrap);
+
+    this.sendBtn = h("button", { class: "btn", type: "button", onclick: () => this.send() }, icon("send", 16), "Gönder");
+    this.pv = h("div");
+
+    root.replaceChildren(h("div", { class: "grid split" },
+      h("div", { class: "card" }, h("h3", {}, "Mesaj oluştur"), h("div", { class: "desc" }, "Botun adına bir kanala mesaj gönder"),
+        fld("Kanal", this.chSel), h("div", { class: "field" }, h("label", {}, "Mesaj türü"), this.modeSeg),
+        h("div", { class: "field" }, this.contentLbl, this.contentTa, this.counter,
+          h("div", { class: "hint" }, "Biçimlendirme: **kalın** · *italik* · __altı çizili__ · `kod` · > alıntı · <@KullanıcıID> · <#KanalID>")),
+        this.embSec, this.pingSec,
+        h("div", { class: "inline" }, this.sendBtn, h("button", { class: "btn ghost", type: "button", onclick: () => this.reset() }, "Formu temizle"))),
+      h("div", { class: "card sticky" }, h("h3", {}, "Canlı önizleme"), h("div", { class: "desc" }, "Discord'da yaklaşık böyle görünür"), this.pv)));
+    this.drawFields(); this.refresh();
+  },
+  fillChannels() { fillChannelSelect(this.chSel, true); this.channel = this.chSel.value; },
+  fillRoles() {
+    this.roleSel.replaceChildren(new Option("Rol seç…", ""), ...roles.map((r) => new Option(r.name, r.id)));
+    this.roleSel.value = roles.some((r) => r.id === this.pingRole) ? this.pingRole : ""; this.pingRole = this.roleSel.value;
+  },
+  drawFields() {
+    const E = this.emb;
+    this.fieldsBox.replaceChildren(...E.fields.map((f, i) => h("div", { class: "fld" },
+      h("input", { placeholder: "Alan adı", value: f.name, maxLength: 256, oninput: (e) => { f.name = e.target.value; this.refresh(); } }),
+      h("input", { placeholder: "Değer", value: f.value, maxLength: 1024, oninput: (e) => { f.value = e.target.value; this.refresh(); } }),
+      h("label", { class: "check", title: "Yan yana göster" }, h("input", { type: "checkbox", checked: f.inline, onchange: (e) => { f.inline = e.target.checked; this.refresh(); } }), "Yan yana"),
+      h("button", { class: "btn ghost sm icon", type: "button", title: "Alanı sil", onclick: () => { E.fields.splice(i, 1); this.drawFields(); this.refresh(); } }, icon("x", 14)))));
+    this.addFieldBtn.disabled = E.fields.length >= 25;
+  },
+  chObj() { return channels.find((c) => c.id === this.channel); },
+  refresh() {
+    const m = this.mode;
+    this.modeSeg.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.k === m));
+    this.embSec.hidden = m === "plain"; this.pingSec.hidden = m !== "announce";
+    this.roleWrap.hidden = !(m === "announce" && this.ping === "role");
+    const ch = this.chObj(); this.cpWrap.hidden = !(m === "announce" && ch && ch.type === 5);
+    this.contentLbl.textContent = m === "plain" ? "Mesaj" : "Üst metin (isteğe bağlı)";
+    this.counter.textContent = `${this.content.length} / 2000`;
+    this.drawPreview();
+  },
+  hasEmbed() { const E = this.emb; return this.mode !== "plain" && !!(E.title.trim() || E.description.trim() || E.author.trim() || E.footer.trim() || E.image.trim() || E.thumb.trim() || E.fields.some((f) => f.name.trim() && f.value.trim())); },
+  drawPreview() {
+    const E = this.emb; const nodes = [];
+    if (this.mode === "announce" && this.ping !== "none") {
+      const r = roles.find((x) => x.id === this.pingRole);
+      nodes.push(h("span", { class: "mention" }, this.ping === "role" ? "@" + (r ? r.name : "rol") : "@" + this.ping), "\n");
     }
-  });
+    nodes.push(this.content);
+    let emb = null;
+    if (this.hasEmbed()) {
+      const thumb = E.thumb.trim(), img = E.image.trim();
+      const bad = (e) => { e.target.style.display = "none"; };
+      emb = h("div", { class: "emb" + (thumb ? " hasthumb" : ""), style: `border-left-color:${E.color}` },
+        E.author.trim() ? h("div", { class: "emb-author" }, E.author) : null,
+        E.title.trim() ? h("div", { class: "emb-title" + (E.url.trim() ? " link" : "") }, E.title) : null,
+        E.description.trim() ? h("div", { class: "emb-desc" }, E.description) : null,
+        E.fields.some((f) => f.name.trim() && f.value.trim()) ? h("div", { class: "emb-fields" }, ...E.fields.filter((f) => f.name.trim() && f.value.trim())
+          .map((f) => h("div", { class: "emb-f" + (f.inline ? " inl" : "") }, h("b", {}, f.name), h("span", {}, f.value)))) : null,
+        img ? h("img", { class: "emb-img", src: img, alt: "", referrerpolicy: "no-referrer", onerror: bad }) : null,
+        thumb ? h("img", { class: "emb-thumb", src: thumb, alt: "", referrerpolicy: "no-referrer", onerror: bad }) : null,
+        E.footer.trim() || E.ts ? h("div", { class: "emb-foot" }, [E.footer.trim(), E.ts ? "Bugün" : ""].filter(Boolean).join(" • ")) : null);
+    }
+    this.pv.replaceChildren(dcMessage(h("span", {}, ...nodes), emb));
+  },
+  reset() {
+    Object.assign(this, { content: "", ping: "none", pingRole: "", crosspost: true });
+    Object.assign(this.emb, { title: "", description: "", url: "", color: "#ffc400", author: "", thumb: "", image: "", footer: "", ts: false, fields: [] });
+    this.init(); this.fillChannels(); this.fillRoles(); this.chSel.value = this.channel; this.refresh();
+  },
+  async send() {
+    const E = this.emb, m = this.mode, ch = this.chObj();
+    if (!this.channel || !ch) return toast("Önce bir kanal seç", "err");
+    const hasEmb = this.hasEmbed();
+    if (m === "plain" && !this.content.trim()) return toast("Mesaj boş olamaz", "err");
+    if (m !== "plain" && !hasEmb) return toast("Embed için en az bir başlık, açıklama veya alan gir", "err");
+    if (m === "announce" && this.ping === "role" && !this.pingRole) return toast("Etiketlenecek rolü seç", "err");
+    if (m === "announce" && (this.ping === "everyone" || this.ping === "here")) {
+      const ok = await confirmBox({ title: `@${this.ping} etiketi`, text: `Bu duyuru #${ch.name} kanalında herkesi bilgilendirecek.\nGöndermek istediğine emin misin?`, ok: "Evet, gönder", danger: true });
+      if (!ok) return;
+    }
+    const body = { channel: this.channel, content: this.content, ping: m === "announce" ? this.ping : "none", pingRole: this.pingRole, crosspost: m === "announce" && this.crosspost && ch.type === 5 };
+    if (m !== "plain") body.embed = { title: E.title, description: E.description, url: E.url, color: parseInt(E.color.slice(1), 16), timestamp: E.ts,
+      footer: { text: E.footer }, author: { name: E.author }, thumbnail: { url: E.thumb }, image: { url: E.image }, fields: E.fields };
+    this.sendBtn.disabled = true;
+    try {
+      const r = await api("send", { method: "POST", body });
+      toast(`Gönderildi → #${ch.name}${r.published ? " (yayınlandı)" : ""}`, "ok", { href: r.url, text: "Mesajı Discord'da aç" });
+    } catch (e) { toast(e.message, "err"); }
+    finally { this.sendBtn.disabled = false; }
+  },
 };
 
-function playList(list, i){
-  queue = list.slice(); idx = i; loadCurrent();
+/* =====================  MESAJ TEMİZLE  ===================== */
+function armBtn(onConfirm) {
+  let armed = false, t;
+  const idle = () => { armed = false; b.classList.remove("danger"); b.replaceChildren(icon("trash", 15)); };
+  const b = h("button", { class: "btn ghost sm", type: "button", title: "Bu mesajı sil", onclick: async (e) => {
+    e.stopPropagation();
+    if (!armed) { armed = true; b.classList.add("danger"); b.replaceChildren(icon("check", 15), "Emin misin?"); t = setTimeout(idle, 3000); return; }
+    clearTimeout(t); idle(); await onConfirm();
+  } }, icon("trash", 15));
+  return b;
 }
-function loadCurrent(){
-  const t = queue[idx]; if (!t) return;
-  $("ttl").textContent = t.title; $("art").textContent = t.author;
-  $("cover").src = thumb(t.videoId); document.title = t.title + " • LASTIFY";
-  recent = [t, ...recent.filter(x => x.videoId !== t.videoId)].slice(0, 30); save("lastify_recent", recent); renderLib();
-  syncLike(); markCurrent();
-  if (ready) player.loadVideoById(t.videoId);
-  clearInterval(timer); timer = setInterval(tick, 500);
-}
-function step(d){
-  if (!queue.length) return;
-  idx = (idx + d + queue.length) % queue.length; loadCurrent();
-}
-function tick(){
-  if (!ready || !player.getDuration) return;
-  const dur = player.getDuration() || 0, cur = player.getCurrentTime() || 0;
-  $("cur").textContent = fmt(cur); $("dur").textContent = fmt(dur);
-  if (!seeking){ const p = dur ? cur / dur * 1000 : 0; $("seek").value = p; $("seek").style.setProperty("--p", p/10 + "%") }
-}
-let seeking = false;
-$("seek").addEventListener("input", e => { seeking = true; e.target.style.setProperty("--p", e.target.value/10 + "%") });
-$("seek").addEventListener("change", e => { if (ready) player.seekTo(player.getDuration() * e.target.value / 1000, true); seeking = false });
-$("vol").addEventListener("input", e => { e.target.style.setProperty("--p", e.target.value + "%"); if (ready) player.setVolume(e.target.value) });
-$("vol").style.setProperty("--p", "80%");
-$("pp").onclick = () => {
-  if (!ready || idx < 0) return;
-  player.getPlayerState() === YT.PlayerState.PLAYING ? player.pauseVideo() : player.playVideo();
-};
-$("next").onclick = () => step(1);
-$("prev").onclick = () => { if (ready && player.getCurrentTime() > 3) player.seekTo(0, true); else step(-1) };
 
-/* ---------- Beğeni ---------- */
-function syncLike(){
-  const t = queue[idx];
-  $("likeBtn").classList.toggle("on", !!t && liked.some(x => x.videoId === t.videoId));
-  $("likedCount").textContent = liked.length + " şarkı";
-}
-$("likeBtn").onclick = () => {
-  const t = queue[idx]; if (!t) return;
-  liked = liked.some(x => x.videoId === t.videoId) ? liked.filter(x => x.videoId !== t.videoId) : [t, ...liked];
-  save("lastify_liked", liked); syncLike();
-  if (view === "liked") setView("liked");
+const Pg = {
+  channel: "", msgs: [], sel: new Set(), hasMore: false, q: "", author: "", bots: true, last: null, rows: new Map(), loading: false,
+  init() {
+    const root = $("#p-purge");
+    this.chSel = h("select", { onchange: (e) => { this.channel = e.target.value; } });
+    this.loadBtn = h("button", { class: "btn", type: "button", onclick: () => this.load(true) }, icon("refresh", 16), "Mesajları getir");
+    this.warn = h("div", { class: "warn", hidden: true }, icon("alert", 18),
+      h("div", {}, h("b", {}, "Mesaj içerikleri boş geliyor. "), "Developer Portal → Bot → ", h("b", {}, "Message Content Intent"), "'i aç ve kaydet. Silme işlemi yine de çalışır."));
+    this.qIn = h("input", { placeholder: "Mesajlarda ara…", oninput: (e) => { this.q = e.target.value.toLowerCase(); this.draw(); } });
+    this.auSel = h("select", { onchange: (e) => { this.author = e.target.value; this.draw(); } });
+    this.botChk = h("input", { type: "checkbox", checked: true, onchange: (e) => { this.bots = e.target.checked; this.draw(); } });
+    this.info = h("span", { class: "hint" });
+    this.delTxt = document.createTextNode("Seçilenleri sil");
+    this.delBtn = h("button", { class: "btn danger", type: "button", onclick: () => this.deleteSelected() }, icon("trash", 16), this.delTxt);
+    const quickBtn = (n) => h("button", { class: "btn ghost sm", type: "button", onclick: () => this.selectNewest(n) }, "Son " + n);
+    this.bar = h("div", { class: "card bar" },
+      h("button", { class: "btn ghost sm", type: "button", onclick: () => this.toggleAll() }, icon("check", 14), "Görünenleri seç"),
+      quickBtn(10), quickBtn(25), quickBtn(50), quickBtn(100),
+      h("button", { class: "btn ghost sm", type: "button", onclick: () => { this.sel.clear(); this.syncSel(); } }, "Temizle"),
+      h("span", { class: "sp" }), this.delBtn);
+    this.list = h("div", { class: "list" });
+    this.moreBtn = h("button", { class: "btn ghost", type: "button", onclick: () => this.load(false) }, "Daha eski mesajları yükle");
+    this.view = h("div", { hidden: true }, this.warn,
+      h("div", { class: "card toolbar" }, h("div", { class: "tb-search" }, icon("search", 16), this.qIn), this.auSel,
+        h("label", { class: "check" }, this.botChk, "Bot mesajları"), this.info),
+      this.bar, this.list, h("div", { style: "text-align:center;margin:14px 0" }, this.moreBtn));
+    root.replaceChildren(
+      h("div", { class: "card", style: "margin-bottom:16px" }, h("h3", {}, "Kanal seç"),
+        h("div", { class: "desc" }, "Mesajlar 100'er 100'er yüklenir. 14 günden yeni mesajlar toplu, daha eskiler tek tek (yavaş) silinir."),
+        h("div", { class: "inline", style: "flex-wrap:nowrap" }, this.chSel, this.loadBtn)),
+      this.view);
+  },
+  fillChannels() { fillChannelSelect(this.chSel, true); this.channel = this.chSel.value; },
+  visible() {
+    return this.msgs.filter((m) => (this.bots || !m.author.bot) && (!this.author || m.author.id === this.author) &&
+      (!this.q || `${m.content} ${m.author.username} ${m.author.globalName || ""} ${m.attachments.map((a) => a.name).join(" ")}`.toLowerCase().includes(this.q)));
+  },
+  fillAuthors() {
+    const map = new Map();
+    for (const m of this.msgs) { const a = map.get(m.author.id) || { n: m.author.globalName || m.author.username, c: 0 }; a.c++; map.set(m.author.id, a); }
+    const cur = this.author;
+    this.auSel.replaceChildren(new Option("Tüm kullanıcılar", ""), ...[...map].sort((x, y) => y[1].c - x[1].c).map(([id, a]) => new Option(`${a.n} (${a.c})`, id)));
+    this.auSel.value = map.has(cur) ? cur : ""; this.author = this.auSel.value;
+  },
+  checkIntent() {
+    const blank = this.msgs.filter((m) => m.type === 0 && !m.author.bot && !m.content && !m.attachments.length && !m.embeds && !m.stickers).length;
+    this.warn.hidden = blank < 3;
+  },
+  async load(reset) {
+    if (!this.channel) return toast("Önce bir kanal seç", "err");
+    if (this.loading) return;
+    this.loading = true; this.loadBtn.disabled = true; this.moreBtn.disabled = true;
+    try {
+      const before = !reset && this.msgs.length ? this.msgs[this.msgs.length - 1].id : null;
+      const r = await api("messages", { query: { c: this.channel, ...(before ? { before } : {}) } });
+      if (reset) { this.msgs = []; this.sel.clear(); this.last = null; this.author = ""; }
+      this.msgs.push(...r.messages);
+      this.hasMore = r.messages.length === 100;
+      this.view.hidden = false;
+      this.fillAuthors(); this.checkIntent(); this.draw();
+      toast(reset ? `${r.messages.length} mesaj yüklendi` : `${r.messages.length} eski mesaj daha yüklendi`, "ok");
+    } catch (e) { toast(e.message, "err"); }
+    finally { this.loading = false; this.loadBtn.disabled = false; this.moreBtn.disabled = false; }
+  },
+  draw() {
+    const vis = this.visible();
+    this.rows.clear();
+    this.list.replaceChildren(...vis.map((m) => { const r = this.row(m); this.rows.set(m.id, r); return r; }));
+    if (!vis.length) this.list.append(h("div", { class: "empty" }, this.msgs.length ? "Filtreye uyan mesaj yok." : "Bu kanalda mesaj bulunamadı."));
+    this.moreBtn.hidden = !this.hasMore;
+    this.syncSel();
+  },
+  syncSel() {
+    this.rows.forEach((r, id) => { const on = this.sel.has(id); r.classList.toggle("sel", on); r.querySelector("input[type=checkbox]").checked = on; });
+    const n = this.sel.size;
+    this.delBtn.disabled = !n;
+    this.delTxt.textContent = n ? `Seçilenleri sil (${n})` : "Seçilenleri sil";
+    this.info.textContent = `${this.rows.size} görünen · ${this.msgs.length} yüklü · ${n} seçili`;
+  },
+  toggleAll() {
+    const vis = this.visible();
+    const all = vis.length && vis.every((m) => this.sel.has(m.id));
+    vis.forEach((m) => (all ? this.sel.delete(m.id) : this.sel.add(m.id)));
+    this.syncSel();
+  },
+  selectNewest(n) { this.sel.clear(); this.visible().slice(0, n).forEach((m) => this.sel.add(m.id)); this.syncSel(); },
+  row(m) {
+    const old = snow(m.id) <= OLD_LIMIT();
+    const vis = () => this.visible();
+    const toggle = (shift, on) => {
+      const list = vis(); const i = list.findIndex((x) => x.id === m.id);
+      if (shift && this.last != null) {
+        const j = list.findIndex((x) => x.id === this.last);
+        if (j >= 0) { const [a, b] = i < j ? [i, j] : [j, i]; list.slice(a, b + 1).forEach((x) => (on ? this.sel.add(x.id) : this.sel.delete(x.id))); }
+      } else on ? this.sel.add(m.id) : this.sel.delete(m.id);
+      this.last = m.id; this.syncSel();
+    };
+    const cb = h("input", { type: "checkbox", onclick: (e) => { e.stopPropagation(); toggle(e.shiftKey, cb.checked); } });
+    let text = null, more = null;
+    const sysLabel = !m.content && !m.attachments.length && !m.embeds && !m.stickers;
+    if (m.content || sysLabel) {
+      text = h("div", { class: "text" + (m.content ? "" : " ph") }, m.content || (m.type !== 0 && m.type !== 19 ? "(sistem mesajı)" : "(içerik yok / görünmüyor)"));
+      if (m.content.length > 280 || m.content.split("\n").length > 5) {
+        more = h("button", { class: "more", type: "button", onclick: (e) => { e.stopPropagation(); const o = text.classList.toggle("open"); more.textContent = o ? "Daralt" : "Tümünü göster"; } }, "Tümünü göster");
+      }
+    }
+    const atts = m.attachments.length || m.embeds || m.stickers ? h("div", { class: "atts" },
+      ...m.attachments.map((a) => a.type.startsWith("image/")
+        ? h("a", { href: a.url, target: "_blank", rel: "noopener", onclick: (e) => e.stopPropagation() }, h("img", { src: a.url, alt: a.name, loading: "lazy", referrerpolicy: "no-referrer" }))
+        : h("a", { class: "attf", href: a.url, target: "_blank", rel: "noopener", onclick: (e) => e.stopPropagation() }, icon("file", 14), `${a.name} · ${fmtSize(a.size)}`)),
+      m.embeds ? h("span", { class: "attf" }, `▣ ${m.embeds} embed`) : null, m.stickers ? h("span", { class: "attf" }, "Çıkartma") : null) : null;
+    const del = armBtn(async () => {
+      try { await api("msg", { method: "DELETE", query: { c: this.channel, id: m.id } }); this.removeLocal([m.id]); toast("Mesaj silindi", "ok"); this.draw(); }
+      catch (e) { if (e.code === 10008) { this.removeLocal([m.id]); this.draw(); } else toast(e.message, "err"); }
+    });
+    return h("div", { class: "msg", onclick: (e) => { if (e.target.closest("input,a,button")) return; toggle(e.shiftKey, !this.sel.has(m.id)); } },
+      cb, avImg(m.author),
+      h("div", { style: "min-width:0" },
+        h("div", { class: "mh" }, h("b", {}, m.author.globalName || m.author.username), m.author.bot ? h("span", { class: "tag" }, "BOT") : null,
+          h("span", { class: "meta", title: fmtDate(m.timestamp) }, ago(m.timestamp)),
+          m.edited ? h("span", { class: "meta" }, "(düzenlendi)") : null, m.pinned ? h("span", { class: "tag dim" }, "SABİT") : null,
+          m.reply ? h("span", { class: "tag dim" }, "YANIT") : null,
+          old ? h("span", { class: "old", title: "14 günden eski: tek tek silinir" }, "ESKİ") : null),
+        text, more, atts),
+      h("div", { class: "act" }, del));
+  },
+  removeLocal(ids) {
+    const s = new Set(ids);
+    this.msgs = this.msgs.filter((m) => !s.has(m.id));
+    ids.forEach((id) => this.sel.delete(id));
+    this.fillAuthors();
+  },
+  async deleteSelected() {
+    const ids = this.msgs.filter((m) => this.sel.has(m.id)).map((m) => m.id);
+    if (!ids.length) return;
+    const lim = OLD_LIMIT();
+    const nOld = ids.filter((id) => snow(id) <= lim).length;
+    const ok = await confirmBox({
+      title: `${ids.length} mesaj silinsin mi?`,
+      text: `Bu işlem geri alınamaz.` + (nOld ? `\n\n${nOld} mesaj 14 günden eski; bunlar tek tek silineceği için biraz sürer (yaklaşık ${Math.ceil(nOld * 0.45)} sn).` : ""),
+      ok: "Evet, sil", danger: true });
+    if (!ok) return;
+    await this.deleteMessages(ids);
+  },
+  async deleteMessages(ids) {
+    const c = this.channel, lim = OLD_LIMIT();
+    const fresh = ids.filter((id) => snow(id) > lim), old = ids.filter((id) => snow(id) <= lim);
+    const total = ids.length; let done = 0, lastErr = null; const failed = [], gone = [];
+    const dlg = progressBox("Mesajlar siliniyor");
+    const single = async (id) => {
+      try { await api("msg", { method: "DELETE", query: { c, id } }); gone.push(id); }
+      catch (e) { if (e.code === 10008) gone.push(id); else { failed.push(id); lastErr = e; } }
+      dlg.update(gone.length + failed.length, total);
+    };
+    try {
+      for (let i = 0; i < fresh.length && !dlg.cancelled; i += 100) {
+        const chunk = fresh.slice(i, i + 100);
+        if (chunk.length === 1) { await single(chunk[0]); continue; }
+        try { await api("bulk", { method: "POST", body: { channel: c, ids: chunk } }); gone.push(...chunk); dlg.update(gone.length + failed.length, total, "· toplu silme"); }
+        catch (e) { lastErr = e; for (const id of chunk) { if (dlg.cancelled) break; await single(id); await sleep(350); } }
+      }
+      for (const id of old) { if (dlg.cancelled) break; await single(id); await sleep(380); }
+    } finally { dlg.close(); }
+    this.removeLocal(gone); this.draw();
+    if (gone.length) toast(`${gone.length} mesaj silindi`, "ok");
+    if (failed.length) toast(`${failed.length} mesaj silinemedi: ${lastErr ? lastErr.message : ""}`, "err");
+    else if (dlg.cancelled && gone.length < total) toast("İşlem durduruldu", "info");
+  },
 };
 
-/* ---------- Olaylar ---------- */
-$("form").addEventListener("submit", e => { e.preventDefault(); doSearch(qInput.value) });
-document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
-$("likedRow").onclick = () => setView("liked");
-$("likedRow").onkeydown = e => { if (e.key === "Enter") setView("liked") };
-document.addEventListener("keydown", e => {
-  if (e.code === "Space" && !/INPUT|BUTTON/.test(document.activeElement.tagName)){ e.preventDefault(); $("pp").click() }
+/* =====================  ORTAK: KULLANICI SEÇİCİ / FORM PENCERESİ  ===================== */
+function userPicker(onPick) {
+  const inp = h("input", { placeholder: "Üye ara (isim / takma ad) ya da Discord ID yaz…", oninput: () => draw() });
+  const box = h("div", { class: "pickbox" });
+  function draw() {
+    const qv = inp.value.trim().toLowerCase();
+    const rows = [];
+    if (IDRE.test(qv) && !members.some((m) => m.id === qv)) {
+      rows.push(h("div", { class: "pick", onclick: async () => {
+        let u = { id: qv, username: qv, avatar: null };
+        try { u = await api("user", { query: { id: qv } }); } catch {}
+        onPick({ ...u, inGuild: false });
+      } }, h("div", {}, h("b", {}, "ID ile devam et: " + qv), h("div", { class: "hint" }, "Sunucuda olmayan veya yasaklı kullanıcılar için"))));
+    }
+    members.filter((m) => !qv || `${m.username} ${m.globalName || ""} ${m.nick || ""} ${m.id}`.toLowerCase().includes(qv)).slice(0, 15)
+      .forEach((m) => rows.push(h("div", { class: "pick", onclick: () => onPick({ ...m, inGuild: true }) }, avImg(m),
+        h("div", {}, h("b", {}, dname(m)), h("div", { class: "hint" }, "@" + m.username)))));
+    box.replaceChildren(...(rows.length ? rows : [h("div", { class: "empty" }, "Eşleşen üye yok")]));
+  }
+  draw();
+  return { el: h("div", {}, h("div", { class: "tb-search" }, icon("search", 16), inp), box), redraw: draw };
+}
+
+function targetCard(t, onClear) {
+  return t
+    ? h("div", { class: "target" }, avImg(t), h("div", { class: "grow" }, h("b", {}, dname(t)), h("div", { class: "hint" }, `@${t.username} · ${t.id}`),
+        h("div", { class: "hint" }, t.inGuild ? "✓ Bu sunucunun üyesi" : "Sunucuda değil / bilinmiyor")),
+      h("button", { class: "btn ghost sm icon", type: "button", title: "Seçimi kaldır", onclick: onClear }, icon("x", 14)))
+    : h("div", { class: "target none" }, icon("user", 18), "Henüz kullanıcı seçilmedi");
+}
+
+function formDialog(title, body, okLabel, onOk) {
+  const close = () => { ov.remove(); document.removeEventListener("keydown", key); };
+  const key = (e) => { if (e.key === "Escape") close(); };
+  const ok = okLabel ? h("button", { class: "btn", type: "button", onclick: async () => {
+    ok.disabled = true;
+    try { const r = await onOk(); if (r !== false) close(); } catch (e) { toast(e.message, "err"); }
+    finally { ok.disabled = false; }
+  } }, okLabel) : null;
+  const ov = h("div", { class: "overlay", onclick: (e) => { if (e.target === ov) close(); } },
+    h("div", { class: "dlg", style: "max-width:520px" }, h("div", { class: "hd" }),
+      h("div", { class: "bd" }, h("h3", {}, title), body),
+      h("div", { class: "ft" }, h("button", { class: "btn ghost", type: "button", onclick: close }, okLabel ? "Vazgeç" : "Kapat"), ok)));
+  document.addEventListener("keydown", key);
+  document.body.append(ov);
+  return close;
+}
+const fieldOf = (label, el, hint) => h("div", { class: "field" }, h("label", {}, label), el, hint ? h("div", { class: "hint" }, hint) : null);
+
+/* =====================  MODERASYON  ===================== */
+const MOD_OPS = [["timeout", "Sustur (timeout)"], ["kick", "At (kick)"], ["ban", "Yasakla (ban)"], ["unban", "Yasağı kaldır"]];
+const TIMEOUTS = [["Susturmayı kaldır", 0], ["1 dakika", 1], ["5 dakika", 5], ["10 dakika", 10], ["1 saat", 60], ["1 gün", 1440], ["1 hafta", 10080], ["28 gün (en fazla)", 40320]];
+const Mod = {
+  op: "timeout", target: null, bans: null, banQ: "",
+  init() {
+    const root = $("#p-mod");
+    this.picker = userPicker((u) => { this.target = u; this.drawTarget(); });
+    this.targetBox = h("div");
+    this.opSeg = h("div", { class: "seg" }, ...MOD_OPS.map(([k, l]) => h("button", { type: "button", "data-k": k, onclick: () => { this.op = k; this.refresh(); } }, l)));
+    this.reason = h("input", { placeholder: "Sebep (denetim kaydına yazılır, isteğe bağlı)", maxLength: 300 });
+    this.durSel = h("select", {}, ...TIMEOUTS.map(([l, v]) => new Option(l, String(v)))); this.durSel.value = "60";
+    this.durField = fieldOf("Süre", this.durSel, "Susturulan üye yazı yazamaz, sesli kanalda konuşamaz.");
+    this.delSel = h("select", {}, new Option("Mesajlarını silme", "0"), new Option("Son 1 günün mesajlarını sil", "1"), new Option("Son 7 günün mesajlarını sil", "7"));
+    this.delField = fieldOf("Mesajlar", this.delSel);
+    this.runBtn = h("button", { class: "btn danger", type: "button", onclick: () => this.run() }, "Uygula");
+    this.toBox = h("div");
+    this.banSearch = h("input", { placeholder: "Yasaklılarda ara…", oninput: (e) => { this.banQ = e.target.value.toLowerCase(); this.drawBans(); } });
+    this.banBox = h("div", { class: "hist", style: "max-height:420px" });
+    this.banLoad = h("button", { class: "btn ghost sm", type: "button", onclick: () => this.loadBans() }, icon("refresh", 14), "Listeyi getir");
+    root.replaceChildren(h("div", { class: "grid split" },
+      h("div", { class: "card" }, h("h3", {}, "Üye işlemi"), h("div", { class: "desc" }, "Birini sustur, at ya da yasakla; yasağı kaldır"),
+        this.picker.el, this.targetBox,
+        h("div", { class: "field", style: "margin-top:14px" }, h("label", {}, "İşlem"), this.opSeg),
+        this.durField, this.delField, fieldOf("Sebep", this.reason), this.runBtn),
+      h("div", { class: "grid" },
+        h("div", { class: "card" }, h("h3", {}, "Susturulanlar"), h("div", { class: "desc" }, "Şu an timeout'ta olan üyeler"), this.toBox),
+        h("div", { class: "card" }, h("h3", {}, "Yasak listesi"), h("div", { class: "desc" }, "Sunucudan yasaklı kullanıcılar"),
+          h("div", { class: "inline", style: "margin-bottom:10px;flex-wrap:nowrap" }, this.banSearch, this.banLoad), this.banBox))));
+    this.drawTarget(); this.refresh(); this.drawTimeouts(); this.drawBans();
+  },
+  drawTarget() { this.targetBox.replaceChildren(targetCard(this.target, () => { this.target = null; this.drawTarget(); })); },
+  refresh() {
+    this.opSeg.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.k === this.op));
+    this.durField.hidden = this.op !== "timeout"; this.delField.hidden = this.op !== "ban";
+    this.runBtn.textContent = (MOD_OPS.find((x) => x[0] === this.op) || [])[1] || "Uygula";
+    this.runBtn.className = "btn" + (this.op === "unban" ? "" : " danger");
+  },
+  async run() {
+    const t = this.target, op = this.op;
+    if (!t) return toast("Önce bir kullanıcı seç", "err");
+    const name = dname(t), mins = parseInt(this.durSel.value);
+    const durLbl = (TIMEOUTS.find((x) => x[1] === mins) || [""])[0];
+    const text = {
+      timeout: mins ? `${name} ${durLbl} boyunca susturulacak.` : `${name} için susturma kaldırılacak.`,
+      kick: `${name} sunucudan atılacak (davet bağlantısıyla geri dönebilir).`,
+      ban: `${name} sunucudan yasaklanacak.`,
+      unban: `${name} için yasak kaldırılacak.`,
+    }[op];
+    if (!(await confirmBox({ title: "Emin misin?", text: text + (this.reason.value.trim() ? `\n\nSebep: ${this.reason.value.trim()}` : ""), ok: "Evet, uygula", danger: op !== "unban" }))) return;
+    this.runBtn.disabled = true;
+    try {
+      await api("mod", { method: "POST", body: { op, userId: t.id, reason: this.reason.value, minutes: mins, deleteDays: parseInt(this.delSel.value) } });
+      toast("İşlem tamamlandı", "ok");
+      this.afterOp(op, t.id, mins);
+      this.target = null; this.drawTarget(); this.reason.value = "";
+    } catch (e) { toast(e.message, "err"); }
+    finally { this.runBtn.disabled = false; }
+  },
+  afterOp(op, id, mins) {
+    if (op === "kick" || op === "ban") { members = members.filter((m) => m.id !== id); refreshAll(); }
+    if (op === "timeout") { const m = members.find((x) => x.id === id); if (m) m.timeoutUntil = mins ? new Date(Date.now() + mins * 60000).toISOString() : null; this.drawTimeouts(); }
+    if (op === "ban" || op === "unban") { if (this.bans) this.loadBans(); }
+  },
+  drawTimeouts() {
+    if (!this.toBox) return;
+    const list = members.filter((m) => m.timeoutUntil && new Date(m.timeoutUntil) > Date.now());
+    this.toBox.replaceChildren(...(list.length ? list.map((m) => h("div", { class: "mini" }, avImg(m),
+      h("div", { class: "grow" }, h("b", {}, dname(m)), h("div", { class: "hint" }, "Bitiş: " + fmtDate(m.timeoutUntil))),
+      h("button", { class: "btn ghost sm", type: "button", onclick: async () => {
+        try { await api("mod", { method: "POST", body: { op: "timeout", userId: m.id, minutes: 0 } }); m.timeoutUntil = null; toast("Susturma kaldırıldı", "ok"); this.drawTimeouts(); }
+        catch (e) { toast(e.message, "err"); }
+      } }, "Kaldır"))) : [h("div", { class: "empty" }, "Şu an susturulmuş üye yok")]));
+  },
+  async loadBans() {
+    this.banLoad.disabled = true;
+    try { this.bans = await api("bans"); this.drawBans(); }
+    catch (e) { toast(e.message, "err"); }
+    finally { this.banLoad.disabled = false; }
+  },
+  drawBans() {
+    if (!this.banBox) return;
+    if (!this.bans) return this.banBox.replaceChildren(h("div", { class: "empty" }, "“Listeyi getir” ile yasakları yükle"));
+    const list = this.bans.filter((b) => !this.banQ || `${b.username} ${b.globalName || ""} ${b.id} ${b.reason || ""}`.toLowerCase().includes(this.banQ));
+    this.banBox.replaceChildren(...(list.length ? list.map((b) => h("div", { class: "mini" }, avImg(b),
+      h("div", { class: "grow" }, h("b", {}, b.globalName || b.username), h("div", { class: "hint" }, `@${b.username} · ${b.id}`),
+        h("div", { class: "hint" }, b.reason ? "Sebep: " + b.reason : "Sebep yok")),
+      h("button", { class: "btn ghost sm", type: "button", onclick: async () => {
+        if (!(await confirmBox({ title: "Yasak kaldırılsın mı?", text: `${b.globalName || b.username} tekrar sunucuya katılabilecek.`, ok: "Yasağı kaldır" }))) return;
+        try { await api("mod", { method: "POST", body: { op: "unban", userId: b.id } }); this.bans = this.bans.filter((x) => x.id !== b.id); toast("Yasak kaldırıldı", "ok"); this.drawBans(); }
+        catch (e) { toast(e.message, "err"); }
+      } }, "Yasağı kaldır"))) : [h("div", { class: "empty" }, "Kayıt yok")]));
+  },
+};
+
+/* =====================  BOT MESAJLARI (düzenle / tepki / sabitle)  ===================== */
+const QUICK_EMOJI = ["👍", "❤️", "🎉", "✅", "❌", "🔥", "👀", "🙏"];
+const BotMsg = {
+  channel: "", msgs: [], onlyBot: true, loading: false,
+  init() {
+    const root = $("#p-botmsg");
+    this.chSel = h("select", { onchange: (e) => { this.channel = e.target.value; } });
+    this.chk = h("input", { type: "checkbox", checked: true, onchange: (e) => { this.onlyBot = e.target.checked; this.draw(); } });
+    this.loadBtn = h("button", { class: "btn", type: "button", onclick: () => this.load(true) }, icon("refresh", 16), "Mesajları getir");
+    this.moreBtn = h("button", { class: "btn ghost", type: "button", hidden: true, onclick: () => this.load(false) }, "Daha eski mesajlar");
+    this.box = h("div", { class: "list" });
+    root.replaceChildren(
+      h("div", { class: "card toolbar" }, this.chSel, h("label", { class: "check" }, this.chk, "Sadece botun mesajları"), this.loadBtn),
+      h("div", { class: "hint", style: "margin:0 4px 12px" }, "Düzenleme yalnızca botun kendi mesajlarında çalışır. Tepki ekleme ve sabitleme her mesajda çalışır (Mesajları Yönet izni gerekir)."),
+      this.box, h("div", { style: "text-align:center;margin-top:14px" }, this.moreBtn));
+    this.draw();
+  },
+  fillChannels() { fillChannelSelect(this.chSel, true, (c) => c.type === 0 || c.type === 5); this.channel = this.chSel.value; },
+  async load(fresh) {
+    if (!this.channel) return toast("Önce bir kanal seç", "err");
+    if (this.loading) return;
+    this.loading = true; this.loadBtn.disabled = true; this.moreBtn.disabled = true;
+    try {
+      const query = { c: this.channel };
+      if (!fresh && this.msgs.length) query.before = this.msgs[this.msgs.length - 1].id;
+      const d = await api("messages", { query });
+      this.msgs = fresh ? d.messages : this.msgs.concat(d.messages);
+      this.hasMore = d.messages.length === 100;
+      this.draw();
+    } catch (e) { toast(e.message, "err"); }
+    finally { this.loading = false; this.loadBtn.disabled = false; this.moreBtn.disabled = false; }
+  },
+  isMine(m) { return guild && guild.botId ? m.author.id === guild.botId : m.author.bot; },
+  draw() {
+    if (!this.box) return;
+    const list = this.msgs.filter((m) => !this.onlyBot || this.isMine(m));
+    this.box.replaceChildren(...(list.length ? list.map((m) => this.row(m)) : [h("div", { class: "empty" }, this.msgs.length ? "Bu filtrede mesaj yok" : "Kanal seçip “Mesajları getir”e bas")]));
+    this.moreBtn.hidden = !this.msgs.length || !this.hasMore;
+  },
+  row(m) {
+    const mine = this.isMine(m);
+    const emb = (m.embedsRaw || [])[0];
+    const rid = (r) => (r.id ? `${r.name}:${r.id}` : r.name);
+    const reacts = (m.reactions || []).length ? h("div", { class: "chips", style: "margin-top:6px" }, ...m.reactions.map((r) => h("span", {
+      class: "chip", style: "cursor:pointer" + (r.me ? ";border-color:var(--y)" : ""), title: r.me ? "Bot tepkisini kaldır" : "Bot olarak tepki ver",
+      onclick: async () => {
+        try {
+          await api("react", { method: r.me ? "DELETE" : "PUT", body: { channel: this.channel, id: m.id, emoji: rid(r) } });
+          if (r.me) { r.me = false; r.count--; m.reactions = m.reactions.filter((x) => x.count > 0); } else { r.me = true; r.count++; }
+          this.draw();
+        } catch (e) { toast(e.message, "err"); }
+      } }, r.id ? ":" + r.name + ":" : r.name, " ", r.count))) : null;
+    return h("div", { class: "bm" }, avImg(m.author),
+      h("div", { style: "min-width:0" },
+        h("div", { class: "mh" }, h("b", {}, m.author.globalName || m.author.username), m.author.bot ? h("span", { class: "tag" }, "BOT") : null,
+          h("span", { class: "meta", title: fmtDate(m.timestamp) }, ago(m.timestamp)), m.edited ? h("span", { class: "meta" }, "(düzenlendi)") : null,
+          m.pinned ? h("span", { class: "tag dim" }, "SABİT") : null, m.poll ? h("span", { class: "tag dim" }, "ANKET") : null),
+        m.content ? h("div", { class: "text" }, m.content) : (emb || m.poll ? null : h("div", { class: "text ph" }, "(içerik yok)")),
+        emb ? h("div", { class: "emb", style: `border-left-color:${hex(emb.color)};margin-top:6px` },
+          emb.title ? h("div", { class: "emb-title" }, emb.title) : null, emb.description ? h("div", { class: "emb-desc" }, emb.description.slice(0, 300)) : null) : null,
+        reacts,
+        h("div", { class: "bm-act" },
+          mine ? h("button", { class: "btn ghost sm", type: "button", onclick: () => this.edit(m) }, icon("edit", 14), "Düzenle") : null,
+          h("button", { class: "btn ghost sm", type: "button", onclick: () => this.react(m) }, icon("smile", 14), "Tepki ekle"),
+          h("button", { class: "btn ghost sm", type: "button", onclick: () => this.pin(m) }, icon("pin", 14), m.pinned ? "Sabitlemeyi kaldır" : "Sabitle"),
+          h("a", { class: "btn ghost sm", href: `https://discord.com/channels/${guild.id}/${this.channel}/${m.id}`, target: "_blank", rel: "noopener" }, "Discord'da aç"))));
+  },
+  async pin(m) {
+    try {
+      await api("pin", { method: m.pinned ? "DELETE" : "PUT", body: { channel: this.channel, id: m.id } });
+      m.pinned = !m.pinned; toast(m.pinned ? "Mesaj sabitlendi" : "Sabitleme kaldırıldı", "ok"); this.draw();
+    } catch (e) { toast(e.code === 30003 ? "Bu kanalda en fazla 50 sabit mesaj olabilir" : e.message, "err"); }
+  },
+  react(m) {
+    const doReact = async (emoji) => {
+      emoji = emoji.trim();
+      if (!emoji) return toast("Bir emoji gir", "err");
+      await api("react", { method: "PUT", body: { channel: this.channel, id: m.id, emoji } });
+      const name = emoji.includes(":") ? emoji.split(":")[0] : emoji, id = emoji.includes(":") ? emoji.split(":")[1] : null;
+      const ex = (m.reactions = m.reactions || []).find((r) => r.name === name && (r.id || null) === id);
+      if (ex) { if (!ex.me) { ex.me = true; ex.count++; } } else m.reactions.push({ name, id, count: 1, me: true });
+      toast("Tepki eklendi", "ok"); this.draw();
+    };
+    let close;
+    const inp = h("input", { placeholder: "Emoji yapıştır (😀) — özel emoji için isim:ID", onkeydown: (e) => { if (e.key === "Enter") go2(inp.value); } });
+    const go2 = async (v) => { try { await doReact(v); close(); } catch (e) { toast(e.message, "err"); } };
+    const body = h("div", { class: "grid", style: "gap:12px" },
+      h("div", { class: "inline" }, ...QUICK_EMOJI.map((e) => h("button", { class: "btn ghost", type: "button", style: "font-size:20px;padding:6px 12px", onclick: () => go2(e) }, e))),
+      h("div", { class: "inline", style: "flex-wrap:nowrap" }, inp, h("button", { class: "btn", type: "button", onclick: () => go2(inp.value) }, "Ekle")));
+    close = formDialog("Tepki ekle", body, null);
+  },
+  edit(m) {
+    const emb = (m.embedsRaw || []).length === 1 ? m.embedsRaw[0] : null;
+    const ta = h("textarea", { maxLength: 2000, style: "min-height:110px", value: m.content || "" });
+    const tIn = h("input", { maxLength: 256, value: emb ? emb.title || "" : "" });
+    const dIn = h("textarea", { maxLength: 4096, style: "min-height:110px", value: emb ? emb.description || "" : "" });
+    const cIn = h("input", { type: "color", value: emb ? hex(emb.color) : "#ffc400" });
+    const rm = h("input", { type: "checkbox" });
+    const body = h("div", {}, fieldOf("Mesaj metni", ta),
+      emb ? h("div", { class: "box" }, h("span", { class: "lbl2" }, "Embed"), fieldOf("Başlık", tIn), fieldOf("Açıklama", dIn),
+        fieldOf("Renk", cIn), h("label", { class: "check" }, rm, "Embed'i tamamen kaldır")) : null,
+      (m.embedsRaw || []).length > 1 ? h("div", { class: "hint" }, "Bu mesajda birden fazla embed var; yalnızca metin düzenlenebilir.") : null);
+    formDialog("Mesajı düzenle", body, "Kaydet", async () => {
+      const payload = { channel: this.channel, id: m.id, content: ta.value };
+      if (emb) payload.embed = rm.checked ? null : { ...emb, title: tIn.value, description: dIn.value, color: parseInt(cIn.value.slice(1), 16) };
+      await api("edit", { method: "PATCH", body: payload });
+      m.content = ta.value; m.edited = new Date().toISOString();
+      if (emb) { if (rm.checked) m.embedsRaw = []; else { emb.title = tIn.value; emb.description = dIn.value; emb.color = parseInt(cIn.value.slice(1), 16); } }
+      toast("Mesaj güncellendi", "ok"); this.draw();
+    });
+  },
+};
+
+/* =====================  ANKET & ETKİNLİK  ===================== */
+const POLL_HOURS = [["1 saat", 1], ["6 saat", 6], ["24 saat", 24], ["3 gün", 72], ["1 hafta", 168], ["2 hafta", 336]];
+const EV_TYPES = { 1: "Sahne", 2: "Ses kanalı", 3: "Dış mekan" };
+const PollEv = {
+  answers: ["", ""], evType: "voice",
+  init() {
+    const root = $("#p-pollev");
+    // --- anket ---
+    this.pCh = h("select");
+    this.pQ = h("input", { placeholder: "Örn. Hafta sonu etkinliği ne olsun?", maxLength: 300 });
+    this.pTop = h("input", { placeholder: "Anketin üstüne yazılacak metin (isteğe bağlı)", maxLength: 500 });
+    this.pDur = h("select", {}, ...POLL_HOURS.map(([l, v]) => new Option(l, String(v)))); this.pDur.value = "24";
+    this.pMulti = h("input", { type: "checkbox" });
+    this.ansBox = h("div");
+    this.addAns = h("button", { class: "btn ghost sm", type: "button", onclick: () => { this.answers.push(""); this.drawAnswers(); } }, icon("plus", 14), "Seçenek ekle");
+    this.pBtn = h("button", { class: "btn", type: "button", onclick: () => this.sendPoll() }, icon("send", 16), "Anketi gönder");
+    // --- etkinlik ---
+    this.eName = h("input", { placeholder: "Etkinlik adı", maxLength: 100 });
+    this.eDesc = h("textarea", { placeholder: "Açıklama (isteğe bağlı)", maxLength: 1000, style: "min-height:80px" });
+    this.eSeg = h("div", { class: "seg" }, ...[["voice", "Ses kanalı"], ["stage", "Sahne"], ["external", "Dış mekan"]].map(([k, l]) =>
+      h("button", { type: "button", "data-k": k, onclick: () => { this.evType = k; this.refreshEv(); } }, l)));
+    this.eCh = h("select");
+    this.eChField = fieldOf("Kanal", this.eCh);
+    this.eLoc = h("input", { placeholder: "Örn. İstanbul, Kadıköy / bir bağlantı", maxLength: 100 });
+    this.eLocField = fieldOf("Konum", this.eLoc);
+    this.eStart = h("input", { type: "datetime-local" });
+    this.eEnd = h("input", { type: "datetime-local" });
+    this.eEndField = fieldOf("Bitiş", this.eEnd, "Dış mekan etkinliklerinde zorunlu");
+    this.eBtn = h("button", { class: "btn", type: "button", onclick: () => this.createEvent() }, icon("plus", 16), "Etkinlik oluştur");
+    this.evBox = h("div");
+    root.replaceChildren(
+      h("div", { class: "grid g2", style: "align-items:start" },
+        h("div", { class: "card" }, h("h3", {}, "Anket gönder"), h("div", { class: "desc" }, "Discord'un yerel anket özelliği (oylama otomatik sayılır)"),
+          fieldOf("Kanal", this.pCh), fieldOf("Soru", this.pQ), fieldOf("Üst metin", this.pTop),
+          h("div", { class: "field" }, h("label", {}, "Seçenekler"), this.ansBox, h("div", {}, this.addAns)),
+          h("div", { class: "row2" }, fieldOf("Süre", this.pDur), h("div", { class: "field" }, h("label", {}, "Seçim"), h("label", { class: "check", style: "margin-top:8px" }, this.pMulti, "Birden fazla seçime izin ver"))),
+          this.pBtn),
+        h("div", { class: "card" }, h("h3", {}, "Sunucu etkinliği"), h("div", { class: "desc" }, "Discord'un “Etkinlikler” bölümünde görünür (Etkinlikleri Yönet izni gerekir)"),
+          fieldOf("Ad", this.eName), fieldOf("Açıklama", this.eDesc), h("div", { class: "field" }, h("label", {}, "Tür"), this.eSeg),
+          this.eChField, this.eLocField,
+          h("div", { class: "row2" }, fieldOf("Başlangıç", this.eStart), this.eEndField), this.eBtn)),
+      h("div", { class: "card", style: "margin-top:16px" }, h("h3", {}, "Planlı etkinlikler"), h("div", { class: "desc" }, "Sunucudaki mevcut etkinlikler"), this.evBox));
+    this.drawAnswers(); this.refreshEv();
+  },
+  fill() {
+    if (!this.pCh) return;
+    fillChannelSelect(this.pCh, true, (c) => c.type === 0 || c.type === 5);
+    this.refreshEv();
+  },
+  drawAnswers() {
+    this.ansBox.replaceChildren(...this.answers.map((a, i) => h("div", { class: "inline", style: "flex-wrap:nowrap;margin-bottom:8px" },
+      h("input", { placeholder: `Seçenek ${i + 1}`, maxLength: 55, value: a, oninput: (e) => { this.answers[i] = e.target.value; } }),
+      h("button", { class: "btn ghost sm icon", type: "button", title: "Seçeneği sil", disabled: this.answers.length <= 2, onclick: () => { this.answers.splice(i, 1); this.drawAnswers(); } }, icon("x", 14)))));
+    this.addAns.disabled = this.answers.length >= 10;
+  },
+  async sendPoll() {
+    const answers = this.answers.map((a) => a.trim()).filter(Boolean);
+    if (!this.pCh.value) return toast("Önce bir kanal seç", "err");
+    if (!this.pQ.value.trim()) return toast("Anket sorusu boş olamaz", "err");
+    if (answers.length < 2) return toast("En az 2 seçenek gir", "err");
+    this.pBtn.disabled = true;
+    try {
+      const r = await api("poll", { method: "POST", body: { channel: this.pCh.value, question: this.pQ.value, content: this.pTop.value, answers, hours: parseInt(this.pDur.value), multi: this.pMulti.checked } });
+      toast("Anket gönderildi", "ok", { href: r.url, text: "Discord'da aç" });
+      this.pQ.value = ""; this.pTop.value = ""; this.answers = ["", ""]; this.drawAnswers();
+    } catch (e) { toast(e.message, "err"); }
+    finally { this.pBtn.disabled = false; }
+  },
+  refreshEv() {
+    if (!this.eSeg) return;
+    this.eSeg.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.k === this.evType));
+    const ext = this.evType === "external";
+    this.eChField.hidden = ext; this.eLocField.hidden = !ext;
+    const want = this.evType === "stage" ? 13 : 2;
+    const cur = this.eCh.value;
+    this.eCh.replaceChildren(new Option(this.evType === "stage" ? "Sahne kanalı seç…" : "Ses kanalı seç…", ""), ...channels.filter((c) => c.type === want).map((c) => new Option(c.name, c.id)));
+    if (channels.some((c) => c.id === cur && c.type === want)) this.eCh.value = cur;
+  },
+  async createEvent() {
+    const ext = this.evType === "external";
+    if (!this.eName.value.trim()) return toast("Etkinlik adı boş olamaz", "err");
+    if (!ext && !this.eCh.value) return toast("Bir kanal seç", "err");
+    if (ext && !this.eLoc.value.trim()) return toast("Konum gir", "err");
+    if (!this.eStart.value) return toast("Başlangıç zamanını seç", "err");
+    if (ext && !this.eEnd.value) return toast("Dış mekan etkinliği için bitiş zamanı gerekli", "err");
+    const start = new Date(this.eStart.value), end = this.eEnd.value ? new Date(this.eEnd.value) : null;
+    if (start.getTime() < Date.now() + 60000) return toast("Başlangıç zamanı gelecekte olmalı", "err");
+    if (end && end <= start) return toast("Bitiş, başlangıçtan sonra olmalı", "err");
+    this.eBtn.disabled = true;
+    try {
+      const r = await api("event", { method: "POST", body: { name: this.eName.value, description: this.eDesc.value, type: this.evType, channel: this.eCh.value, location: this.eLoc.value, start: start.toISOString(), end: end ? end.toISOString() : undefined } });
+      toast("Etkinlik oluşturuldu", "ok", { href: r.url, text: "Discord'da aç" });
+      this.eName.value = ""; this.eDesc.value = ""; this.eStart.value = ""; this.eEnd.value = ""; this.eLoc.value = "";
+      this.loadEvents();
+    } catch (e) { toast(e.message, "err"); }
+    finally { this.eBtn.disabled = false; }
+  },
+  async loadEvents() {
+    if (!this.evBox) return;
+    try {
+      const list = await api("events");
+      this.evBox.replaceChildren(...(list.length ? list.map((ev) => h("div", { class: "mini" },
+        h("div", { class: "qi", style: "width:38px;height:38px" }, icon("calendar", 18)),
+        h("div", { class: "grow" }, h("b", {}, ev.name),
+          h("div", { class: "hint" }, `${EV_TYPES[ev.type] || "Etkinlik"} · ${fmtDate(ev.start)}${ev.status === 2 ? " · ŞU AN AKTİF" : ""}${ev.count != null ? ` · ${ev.count} ilgilenen` : ""}`)),
+        h("a", { class: "btn ghost sm", href: `https://discord.com/events/${guild.id}/${ev.id}`, target: "_blank", rel: "noopener" }, "Aç"),
+        h("button", { class: "btn ghost sm", type: "button", onclick: async () => {
+          if (!(await confirmBox({ title: "Etkinlik silinsin mi?", text: `“${ev.name}” silinecek.`, ok: "Sil", danger: true }))) return;
+          try { await api("event", { method: "DELETE", query: { id: ev.id } }); toast("Etkinlik silindi", "ok"); this.loadEvents(); } catch (e) { toast(e.message, "err"); }
+        } }, icon("trash", 14)))) : [h("div", { class: "empty" }, "Planlı etkinlik yok")]));
+    } catch (e) { toast(e.message, "err"); }
+  },
+};
+
+/* =====================  TICKET  ===================== */
+const Tkt = {
+  init() {
+    const root = $("#p-ticket");
+    this.ch = h("select"); this.cat = h("select"); this.staff = h("select");
+    this.title = h("input", { value: "🎫 Destek", maxLength: 200 });
+    this.desc = h("textarea", { maxLength: 1000, style: "min-height:96px", value: "Yardıma mı ihtiyacın var? Aşağıdaki butona basarak özel bir destek bileti aç." });
+    this.btnLbl = h("input", { value: "Bilet Aç", maxLength: 80 });
+    this.color = h("input", { type: "color", value: "#ffc400" });
+    this.sendBtn = h("button", { class: "btn", type: "button", onclick: () => this.sendPanel() }, icon("send", 16), "Bilet panelini gönder");
+    this.listBox = h("div");
+    const epUrl = location.origin + "/api/panel?a=interactions";
+    const ep = h("input", { readOnly: true, value: epUrl, onclick: (e) => e.target.select() });
+    root.replaceChildren(h("div", { class: "grid split" },
+      h("div", { class: "grid" },
+        h("div", { class: "card" }, h("h3", {}, "1 · Bilet panelini gönder"), h("div", { class: "desc" }, "Üyeler butona basınca özel (gizli) bir bilet kanalı açılır"),
+          fieldOf("Panelin gönderileceği kanal", this.ch), fieldOf("Biletlerin açılacağı kategori", this.cat),
+          fieldOf("Yetkili rol (biletleri görür)", this.staff, "Seçmezsen yalnızca bilet sahibi, bot ve yönetici izni olanlar görür."),
+          fieldOf("Başlık", this.title), fieldOf("Açıklama", this.desc),
+          h("div", { class: "row2" }, fieldOf("Buton yazısı", this.btnLbl), fieldOf("Renk", this.color)), this.sendBtn),
+        h("div", { class: "card" }, h("h3", {}, "Açık biletler"), h("div", { class: "desc" }, "Şu an açık olan destek talepleri"),
+          h("div", { style: "margin-bottom:10px" }, h("button", { class: "btn ghost sm", type: "button", onclick: () => this.loadList() }, icon("refresh", 14), "Yenile")), this.listBox)),
+      h("div", { class: "card" }, h("h3", {}, "Kurulum (bir kez)"), h("div", { class: "desc" }, "Butonların çalışması için Discord'a panelin adresini bildirmelisin"),
+        h("ol", { class: "tips" },
+          h("li", {}, "Vercel → Settings → Environment Variables: ", h("b", {}, "DISCORD_PUBLIC_KEY"), " ekle (Developer Portal → General Information → Public Key) ve yeniden deploy et."),
+          h("li", {}, "Developer Portal → General Information → ", h("b", {}, "Interactions Endpoint URL"), " alanına şunu yapıştır ve kaydet:"),
+          h("div", { style: "margin:4px 0 8px" }, ep),
+          h("li", {}, "Bota şu izinleri ver: ", h("b", {}, "Kanalları Yönet"), ", Kanalı Görüntüle, Mesaj Gönder, Bağlantı Yerleştir, Dosya Ekle, Mesaj Geçmişini Oku."),
+          h("li", {}, "Bilet kanalları kategoride özel açılır; kapatma butonu bilet sahibi ve yetkililerde çalışır."),
+          h("li", {}, "Bilet sahibi başına aynı anda yalnızca 1 açık bilet olur.")))));
+  },
+  fill() {
+    if (!this.ch) return;
+    fillChannelSelect(this.ch, true, (c) => c.type === 0 || c.type === 5);
+    const cat = this.cat.value, st = this.staff.value;
+    this.cat.replaceChildren(new Option("Kategori seç…", ""), ...categories.map((c) => new Option(c.name, c.id)));
+    this.staff.replaceChildren(new Option("Yok (sadece yönetim)", ""), ...roles.filter((r) => !r.managed).map((r) => new Option(r.name, r.id)));
+    if (categories.some((c) => c.id === cat)) this.cat.value = cat;
+    if (roles.some((r) => r.id === st)) this.staff.value = st;
+  },
+  async sendPanel() {
+    if (!this.ch.value) return toast("Panelin gönderileceği kanalı seç", "err");
+    if (!this.cat.value) return toast("Biletlerin açılacağı kategoriyi seç", "err");
+    this.sendBtn.disabled = true;
+    try {
+      const r = await api("ticketpanel", { method: "POST", body: { channel: this.ch.value, category: this.cat.value, staffRole: this.staff.value, title: this.title.value, description: this.desc.value, button: this.btnLbl.value, color: parseInt(this.color.value.slice(1), 16) } });
+      toast("Bilet paneli gönderildi", "ok", { href: r.url, text: "Discord'da aç" });
+    } catch (e) { toast(e.message, "err"); }
+    finally { this.sendBtn.disabled = false; }
+  },
+  async loadList() {
+    if (!this.listBox) return;
+    try {
+      const list = await api("tickets");
+      this.listBox.replaceChildren(...(list.length ? list.map((t) => {
+        const u = members.find((m) => m.id === t.opener);
+        return h("div", { class: "mini" }, u ? avImg(u) : icon("user", 20),
+          h("div", { class: "grow" }, h("b", {}, "#" + t.name), h("div", { class: "hint" }, `${u ? dname(u) : t.opener} · ${ago(t.created)}`)),
+          h("a", { class: "btn ghost sm", href: `https://discord.com/channels/${guild.id}/${t.id}`, target: "_blank", rel: "noopener" }, "Aç"),
+          h("button", { class: "btn ghost sm", type: "button", onclick: async () => {
+            if (!(await confirmBox({ title: "Bilet kapatılsın mı?", text: `#${t.name} kanalı silinecek.`, ok: "Kapat", danger: true }))) return;
+            try { await api("ticket", { method: "DELETE", query: { c: t.id } }); toast("Bilet kapatıldı", "ok"); this.loadList(); } catch (e) { toast(e.message, "err"); }
+          } }, "Kapat"));
+      }) : [h("div", { class: "empty" }, "Açık bilet yok")]));
+    } catch (e) { toast(e.message, "err"); }
+  },
+};
+
+/* =====================  OTOMATİK ROL  ===================== */
+const AUTO_WINDOWS = [["Son 5 dakika", 5], ["Son 30 dakika", 30], ["Son 1 saat", 60], ["Son 24 saat", 1440], ["Son 7 gün", 10080]];
+const Auto = {
+  timer: null, log: [],
+  init() {
+    const root = $("#p-autorole");
+    let saved = {}; try { saved = JSON.parse(localStorage.getItem("dp2auto") || "{}"); } catch {}
+    this.role = h("select", { onchange: () => this.save() });
+    this.win = h("select", { onchange: () => this.save() }, ...AUTO_WINDOWS.map(([l, v]) => new Option(l, String(v)))); this.win.value = String(saved.minutes || 60);
+    this.bots = h("input", { type: "checkbox" });
+    this.live = h("input", { type: "checkbox", checked: !!saved.on, onchange: () => { this.save(); this.schedule(); } });
+    this.savedRole = saved.role || "";
+    this.runBtn = h("button", { class: "btn", type: "button", onclick: () => this.run(false) }, icon("users", 16), "Şimdi tara ve rolü ver");
+    this.logBox = h("div", { class: "hist" });
+    root.replaceChildren(h("div", { class: "grid split" },
+      h("div", { class: "card" }, h("h3", {}, "Yeni üyeye otomatik rol"), h("div", { class: "desc" }, "Sunucuya yeni katılıp rolü olmayanlara seçtiğin rol verilir"),
+        fieldOf("Verilecek rol", this.role, "Botun rolü bu rolün üstünde olmalı."), fieldOf("Kimler yeni sayılsın?", this.win),
+        h("label", { class: "check", style: "margin-bottom:12px" }, this.bots, "Botlara da ver"),
+        h("div", { class: "box" }, h("span", { class: "lbl2" }, "Otomatik tarama"),
+          h("label", { class: "check" }, this.live, "Panel açıkken her 60 saniyede bir otomatik tara"),
+          h("div", { class: "hint", style: "margin-top:6px" }, "Bu sekme/pencere açık olduğu sürece çalışır.")),
+        this.runBtn),
+      h("div", { class: "grid" },
+        h("div", { class: "card" }, h("h3", {}, "Sonuçlar"), h("div", { class: "desc" }, "Bu oturumdaki taramalar"), this.logBox),
+        h("div", { class: "card" }, h("h3", {}, "Panel kapalıyken de çalışsın"), h("div", { class: "desc" }, "Vercel Cron ile zamanlanmış tarama"),
+          h("ol", { class: "tips" },
+            h("li", {}, "Vercel ortam değişkenleri: ", h("b", {}, "AUTO_ROLE_ID"), " (rolün ID'si), ", h("b", {}, "CRON_SECRET"), " (rastgele bir parola)."),
+            h("li", {}, "Projenin köküne ", h("b", {}, "vercel.json"), " ekle:"),
+            h("pre", { class: "code" }, '{\n  "crons": [\n    { "path": "/api/panel?a=cron", "schedule": "0 4 * * *" }\n  ]\n}'),
+            h("li", {}, "Ücretsiz (Hobby) planda cron günde en fazla 1 kez çalışır; sık tarama için panelin otomatik taraması ya da ücretli plan gerekir."),
+            h("li", {}, h("b", {}, "Gerçekten anında"), " rol için Discord'un “üye katıldı” olayını dinleyen, sürekli açık bir bot gerekir (Vercel buna uygun değil)."))))));
+    this.drawLog(); this.schedule();
+  },
+  fillRoles() {
+    if (!this.role) return;
+    const cur = this.role.value || this.savedRole;
+    this.role.replaceChildren(new Option("Rol seç…", ""), ...roles.filter((r) => !r.managed).map((r) => new Option(r.name, r.id)));
+    this.role.value = roles.some((r) => r.id === cur && !r.managed) ? cur : "";
+  },
+  save() { try { localStorage.setItem("dp2auto", JSON.stringify({ role: this.role.value, minutes: parseInt(this.win.value), on: this.live.checked })); } catch {} },
+  schedule() {
+    clearInterval(this.timer); this.timer = null;
+    if (this.live.checked) this.timer = setInterval(() => { if (this.role.value) this.run(true); }, 60000);
+  },
+  async run(silent) {
+    if (!this.role.value) return silent ? null : toast("Önce verilecek rolü seç", "err");
+    if (!silent) this.runBtn.disabled = true;
+    try {
+      const r = await api("autorole", { method: "POST", body: { roleId: this.role.value, minutes: parseInt(this.win.value), includeBots: this.bots.checked } });
+      if (!silent || r.given || r.failed) {
+        this.log.unshift({ t: Date.now(), r, silent });
+        this.log = this.log.slice(0, 30); this.drawLog();
+      }
+      if (r.given) { toast(`${r.given} üyeye “${r.role}” rolü verildi`, "ok"); loadAll().then(refreshAll).catch(() => {}); }
+      else if (!silent) toast(r.matched ? "Rol verilemedi: " + (r.error || "bilinmeyen hata") : "Rolü olmayan yeni üye bulunamadı", r.matched ? "err" : "info");
+    } catch (e) { if (!silent) toast(e.message, "err"); }
+    finally { this.runBtn.disabled = false; }
+  },
+  drawLog() {
+    this.logBox.replaceChildren(...(this.log.length ? this.log.map((x) => h("div", { class: "hi" + (x.r.failed ? " bad" : "") },
+      h("div", { class: "meta" }, `${new Date(x.t).toLocaleTimeString("tr-TR")} · ${x.silent ? "otomatik" : "elle"}`),
+      h("p", {}, `Taranan ${x.r.checked} üye · uygun ${x.r.matched} · verilen ${x.r.given}${x.r.failed ? ` · başarısız ${x.r.failed} (${x.r.error})` : ""}${x.r.remaining ? ` · kalan ${x.r.remaining}` : ""}`))) : [h("div", { class: "empty" }, "Henüz tarama yok")]));
+  },
+};
+
+/* =====================  BAŞLATMA  ===================== */
+let inited = false;
+function drawGuild() {
+  const g = $("#guildCard");
+  g.replaceChildren(
+    guild.icon ? h("img", { src: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=96`, alt: "" }) : h("div", { class: "gi" }, (guild.name || "?")[0]),
+    h("div", { style: "min-width:0" }, h("b", {}, guild.name), h("div", { class: "hint" }, `${members.length} üye`)));
+}
+function refreshAll() {
+  drawGuild(); Home.render();
+  Mem.fillRoles(); Mem.draw();
+  Dm.drawResults();
+  Snd.fillChannels(); Snd.fillRoles(); Snd.refresh();
+  Pg.fillChannels();
+  Tkt.fill(); Mod.drawTimeouts(); Mod.picker.redraw(); BotMsg.fillChannels(); PollEv.fill(); Auto.fillRoles();
+}
+async function loadAll() {
+  const [g, rl, mb, ch, cat] = await Promise.all([api("guild"), api("roles"), api("members"), api("channels").catch(() => []), api("categories").catch(() => [])]);
+  guild = g; roles = rl; members = mb; channels = ch; categories = cat;
+}
+async function boot() {
+  await loadAll();
+  if (!inited) {
+    inited = true;
+    $("#sideLogo").replaceChildren(icon("bolt", 22));
+    $("#refreshBtn").prepend(icon("refresh", 16)); $("#logoutBtn").prepend(icon("logout", 16));
+    $("#hamb").append(icon("menu", 18));
+    buildNav(); Mem.init(); Dm.init(); Snd.init(); Pg.init(); Auto.init(); BotMsg.init(); PollEv.init(); Tkt.init(); Mod.init();
+  }
+  refreshAll();
+  $("#login").hidden = true; $("#shell").hidden = false;
+  let p = "home"; try { p = localStorage.getItem("dp2page") || "home"; } catch {}
+  go(p);
+}
+
+$("#loginLogo").replaceChildren(icon("bolt", 30));
+$("#loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  PW = $("#pw").value;
+  const btn = $("#loginBtn"); btn.disabled = true; $("#loginErr").textContent = "";
+  try {
+    await boot();
+    const store = $("#remember").checked ? localStorage : sessionStorage;
+    try { store.setItem("dp2", PW); } catch {}
+  } catch (err) { $("#loginErr").textContent = err.message; }
+  finally { btn.disabled = false; }
 });
+$("#refreshBtn").addEventListener("click", async () => {
+  const b = $("#refreshBtn"); b.disabled = true;
+  try { await loadAll(); refreshAll(); toast("Veriler yenilendi", "ok"); } catch (e) { toast(e.message, "err"); }
+  finally { b.disabled = false; }
+});
+$("#logoutBtn").addEventListener("click", () => { try { localStorage.removeItem("dp2"); sessionStorage.removeItem("dp2"); } catch {} location.reload(); });
+$("#hamb").addEventListener("click", openDrawer);
+$("#scrim").addEventListener("click", closeDrawer);
 
-renderLib(); renderHome();
+(async () => {
+  let saved = null;
+  try { saved = localStorage.getItem("dp2") || sessionStorage.getItem("dp2"); } catch {}
+  if (saved) { PW = saved; try { await boot(); } catch (err) { $("#loginErr").textContent = err.message; } }
+})();
 </script>
 </body>
 </html>
